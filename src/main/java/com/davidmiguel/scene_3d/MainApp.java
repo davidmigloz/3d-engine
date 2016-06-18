@@ -1,10 +1,12 @@
 package com.davidmiguel.scene_3d;
 
+import com.davidmiguel.scene_3d.engine.Polygon;
 import com.davidmiguel.scene_3d.gui.GuiController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +48,9 @@ public class MainApp extends Application {
             controller = loader.getController();
             // Lunch GUI
             primaryStage.show();
+            // Set data
+            Polygon p = new Polygon(new double[]{10, 200, 10}, new double[]{10, 200, 400}, Color.BLACK);
+            p.draw(controller.getGC());
         } catch (IOException e) {
             logger.error("Error loading GUI", e);
         }
