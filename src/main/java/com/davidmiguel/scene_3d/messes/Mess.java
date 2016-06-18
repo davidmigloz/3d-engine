@@ -1,4 +1,4 @@
-package com.davidmiguel.scene_3d.engine;
+package com.davidmiguel.scene_3d.messes;
 
 import javax.vecmath.Vector3d;
 
@@ -32,7 +32,7 @@ public class Mess {
 
     public Mess(String name, int numVertices) {
         this.name = name;
-        this.vertices = new Vector3d[numVertices];
+        this.vertices = new Vector3d[0];
         this.position = new Vector3d();
         this.rotation = new Vector3d();
     }
@@ -43,6 +43,10 @@ public class Mess {
 
     public Vector3d[] getVertices() {
         return vertices;
+    }
+
+    void setVertices(Vector3d[] vertices) {
+        this.vertices = vertices;
     }
 
     public Vector3d getPosition() {
