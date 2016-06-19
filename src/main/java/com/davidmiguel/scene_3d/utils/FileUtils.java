@@ -25,17 +25,19 @@ public class FileUtils {
 
     public static Mesh[] parseMeshFromJSON(File json) {
         List<Mesh> meshes = new ArrayList<>();
-        try {
-            // Get parser
-            JsonReader reader = new JsonReader(new FileReader(json));
+        try (JsonReader reader = new JsonReader(new FileReader(json))){
             // Read JSON
-            reader.beginArray();
+            reader.beginObject();
             while (reader.hasNext()) {
-                meshes.add(readMesh(reader));
+                if(reader.nextName().equals("meshes")){
+                    reader.beginArray();
+                    meshes.add(readMesh(reader));
+                    reader.endArray();
+                } else {
+                    reader.skipValue();
+                }
             }
-            reader.endArray();
-
-
+            reader.endObject();
         } catch (IOException e) {
             logger.error("Error at parsing JSON.", e);
         }

@@ -45,6 +45,10 @@ public class Engine {
      * Re-compute each vertex projection during each frame.
      */
     public void render(Camera camera, Mesh[] meshes) {
+        if(meshes == null || meshes.length == 0 || camera == null) {
+            return;
+        }
+
         Matrix4d viewMatrix = MathUtils.lookAtLH(camera.getPosition(), camera.getTarget(), MathUtils.UP);
         Matrix4d projectionMatrix = MathUtils.perspectiveFovLH(
                 0.78, gc.getCanvas().getWidth() / gc.getCanvas().getHeight(), 0.01, 1.0);

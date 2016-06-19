@@ -3,14 +3,20 @@ package com.davidmiguel.scene_3d.view;
 import com.davidmiguel.scene_3d.engine.Camera;
 import com.davidmiguel.scene_3d.engine.Engine;
 import com.davidmiguel.scene_3d.meshes.Mesh;
+import com.davidmiguel.scene_3d.utils.FileUtils;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import javax.vecmath.Vector3d;
+import java.io.File;
 
 /**
  * GuiController.
@@ -21,30 +27,62 @@ import javafx.util.Duration;
 public class GuiController {
 
     @FXML
+    private MenuItem openMesh;
+    @FXML
+    private MenuItem cube;
+    @FXML
+    private MenuItem cylinder;
+    @FXML
+    private MenuItem quit;
+    @FXML
+    private MenuItem about;
+    @FXML
     private Canvas canvas;
     @FXML
     private Label status;
     @FXML
     private Label fps;
 
+    private Engine engine;
+    private Mesh[] meshes;
+    private Camera camera;
     private static long t0;
 
     @FXML
     private void initialize() {
-        status.setText("Ready!");
-        fps.setText("0fps");
+        // Initial setup
+        status.setText("Starting...");
+        fps.setText("0");
         canvas.getGraphicsContext2D().setLineWidth(1);
+        engine = new Engine(canvas.getGraphicsContext2D());
+        meshes = new Mesh[0];
+        camera = new Camera(new Vector3d(0, 0, 10), new Vector3d(0, 0, 0));
+        startRenderingLoop();
     }
 
-    public GraphicsContext getGC() {
-        return canvas.getGraphicsContext2D();
+    @FXML
+    private void handleOpenMesh() {
+        Stage primaryStage = (Stage) canvas.getScene().getWindow();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("JSON (*.json;*.babylon)", "*.json", "*.babylon"));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setTitle("Open mesh...");
+        File f = fileChooser.showOpenDialog(primaryStage);
+        if (f != null) {
+            addMeshesFromFile(f);
+        }
     }
 
-    public void run(Engine engine, Camera camera, Mesh[] meshes) {
+    private void addMeshesFromFile(File f) {
+        meshes = FileUtils.parseMeshFromJSON(f);
+    }
+
+    private void startRenderingLoop() {
         // Rendering loop (50hz)
         Timeline tl = new Timeline();
         tl.setCycleCount(Animation.INDEFINITE);
-        t0 = System.currentTimeMillis();
+        t0 = System.currentTimeMillis(); // For computation of fps
         KeyFrame frame = new KeyFrame(Duration.millis(20), event -> {
             // Clear the screen and all associated pixels with white ones
             engine.clear();
