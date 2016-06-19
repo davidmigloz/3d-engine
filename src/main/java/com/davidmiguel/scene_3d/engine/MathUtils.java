@@ -96,7 +96,7 @@ public class MathUtils {
     public static Matrix4d rotationYawPitchRoll(double yaw, double pitch, double roll) {
         Matrix4d m = MathUtils.rotationZ(roll);
         m.mul(MathUtils.rotationX(pitch));
-        m.mul(MathUtils.rotationY(pitch));
+        m.mul(MathUtils.rotationY(yaw));
         return m;
     }
 
@@ -117,7 +117,7 @@ public class MathUtils {
         result.m22 = c;
         result.m33 = 1.0;
         return result;
-    };
+    }
 
     /**
      * Rotates a matrix around Y axis.
@@ -136,7 +136,7 @@ public class MathUtils {
         result.m22 = c;
         result.m33 = 1.0;
         return result;
-    };
+    }
 
     /**
      * Rotates a matrix around Z axis.
@@ -155,7 +155,7 @@ public class MathUtils {
         result.m22 = 1.0;
         result.m33 = 1.0;
         return result;
-    };
+    }
 
     /**
      * Creates a matrix with a translation pitch defined by x, y, z.
