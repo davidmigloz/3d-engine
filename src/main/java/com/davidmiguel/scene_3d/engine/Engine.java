@@ -59,6 +59,7 @@ public class Engine {
             transformMatrix.mul(viewMatrix);
             transformMatrix.mul(projectionMatrix);
 
+            // Draw faces
             for (Face face : mesh.getFaces()) {
                 // Project the 3D coordinates into the 2D space
                 Vector3d vertexA = mesh.getVertices()[face.getA()];
@@ -67,7 +68,7 @@ public class Engine {
                 Vector2d pixelA = this.project(vertexA, transformMatrix);
                 Vector2d pixelB = this.project(vertexB, transformMatrix);
                 Vector2d pixelC = this.project(vertexC, transformMatrix);
-                // Draw on screen
+                // Draw triangle
                 this.drawLine(pixelA, pixelB);
                 this.drawLine(pixelB, pixelC);
                 this.drawLine(pixelC, pixelA);
@@ -98,7 +99,7 @@ public class Engine {
     /**
      * Draw line with Bresenham’s line algorithm.
      */
-    public void drawLine(Vector2d p1, Vector2d p2) {
+    private void drawLine(Vector2d p1, Vector2d p2) {
         int x0 = (int)p1.x;
         int y0 = (int)p1.y;
         int x1 = (int)p2.x;

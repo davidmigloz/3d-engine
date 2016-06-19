@@ -23,16 +23,16 @@ public class GuiController {
     @FXML
     private Canvas canvas;
     @FXML
-    private Label leftStatus;
+    private Label status;
     @FXML
-    private Label rightStatus;
+    private Label fps;
 
     private static long t0;
 
     @FXML
     private void initialize() {
-        leftStatus.setText("Ready!");
-        rightStatus.setText("0fps");
+        status.setText("Ready!");
+        fps.setText("0fps");
         canvas.getGraphicsContext2D().setLineWidth(1);
     }
 
@@ -59,7 +59,7 @@ public class GuiController {
             engine.draw();
             // Update fps info
             long t1 = System.currentTimeMillis();
-            rightStatus.setText("fps: " + Math.round(1 / ((t1 - t0) / 1000.0)));
+            fps.setText(Long.toString(Math.round(1 / ((t1 - t0) / 1000.0))));
             t0 = t1;
         });
         tl.getKeyFrames().add(frame);
