@@ -1,13 +1,12 @@
 package com.davidmiguel.scene_3d.engine;
 
+import com.davidmiguel.scene_3d.meshes.Mesh;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-import javax.imageio.ImageWriter;
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
@@ -22,7 +21,6 @@ public class Engine {
 
     private WritableImage backBuffer;
     private GraphicsContext gc;
-    private Camera camera;
 
     public Engine(GraphicsContext gc) {
         this.gc = gc;
@@ -41,6 +39,34 @@ public class Engine {
     }
 
     /**
+     * Re-compute each vertex projection during each frame.
+     */
+    public void render(Camera camera, Mesh[] meshes) {
+        Matrix4d viewMatrix = MathUtils.lookAtLH(camera.getPosition(), camera.getTarget(), MathUtils.UP);
+        Matrix4d projectionMatrix = MathUtils.perspectiveFovLH(
+                0.78, gc.getCanvas().getWidth() / gc.getCanvas().getHeight(), 0.01, 1.0);
+
+        for (Mesh mesh : meshes) {
+            // Apply rotation and then translation
+            Matrix4d worldMatrix = MathUtils.rotationYawPitchRoll(
+                    mesh.getRotation().y, mesh.getRotation().x, mesh.getRotation().z);
+            worldMatrix.mul(MathUtils.translation(
+                    mesh.getPosition().x, mesh.getPosition().y, mesh.getPosition().z));
+
+            Matrix4d transformMatrix = new Matrix4d(worldMatrix);
+            transformMatrix.mul(viewMatrix);
+            transformMatrix.mul(projectionMatrix);
+
+            for (Vector3d vertex : mesh.getVertices()) {
+                // Project the 3D coordinates into the 2D space
+                Vector2d projectedPoint = this.project(vertex, transformMatrix);
+                // Draw on screen
+                this.drawPoint(projectedPoint);
+            }
+        }
+    }
+
+    /**
      * Flush the back buffer into the canvas.
      */
     public void draw() {
@@ -50,7 +76,7 @@ public class Engine {
     /**
      * Put a pixel on backBuffer at specific x,y coordinates.
      */
-    public void putPixel(int x, int y, Color color) {
+    private void putPixel(int x, int y, Color color) {
         PixelWriter pw = backBuffer.getPixelWriter();
         // Write new pixel
         pw.setColor(x, y, color);
@@ -60,9 +86,9 @@ public class Engine {
      * Project takes some 3D coordinates and transform them in
      * 2D coordinates using the transformation matrix.
      */
-    public Vector2d project(Vector3d coord, Matrix4d transMat) {
+    private Vector2d project(Vector3d coord, Matrix4d transMat) {
         // Transforming the coordinates
-        Vector3d point = transformCoordinates(coord, transMat);
+        Vector3d point = MathUtils.transformCoordinates(coord, transMat);
         // Transform from coordinate system starting at center to another starting at top left
         double x = point.x * gc.getCanvas().getWidth() + gc.getCanvas().getWidth() / 2.0;
         double y = -point.y * gc.getCanvas().getHeight() + gc.getCanvas().getHeight() / 2.0;
@@ -72,7 +98,7 @@ public class Engine {
     /**
      * Calls putPixel but does the clipping operation before.
      */
-    public void drawPoint(Vector2d point) {
+    private void drawPoint(Vector2d point) {
         // Clipping what's visible on screen
         if (point.x >= 0 && point.y >= 0
                 && point.x < gc.getCanvas().getWidth()
@@ -80,13 +106,5 @@ public class Engine {
             // Drawing point
             this.putPixel((int) point.x, (int) point.y, Color.BLACK);
         }
-    }
-
-    private Vector3d transformCoordinates(Vector3d coord, Matrix4d transMat) {
-        double x = (coord.x * transMat.m00) + (coord.y * transMat.m01) + (coord.z * transMat.m02) + transMat.m03;
-        double y = (coord.x * transMat.m10) + (coord.y * transMat.m11) + (coord.z * transMat.m12) + transMat.m13;
-        double z = (coord.x * transMat.m20) + (coord.y * transMat.m21) + (coord.z * transMat.m22) + transMat.m23;
-        double w = (coord.x * transMat.m30) + (coord.y * transMat.m31) + (coord.z * transMat.m32) + transMat.m33;
-        return new Vector3d(x / w, y / w, z / w);
     }
 }

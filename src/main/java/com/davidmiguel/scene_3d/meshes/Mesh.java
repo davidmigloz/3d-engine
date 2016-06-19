@@ -1,14 +1,14 @@
-package com.davidmiguel.scene_3d.messes;
+package com.davidmiguel.scene_3d.meshes;
 
 import javax.vecmath.Vector3d;
 
 /**
- * Mess (3D object).
+ * Mesh (3D object).
  *
  * @author davidmigloz
  * @since 18/06/2016
  */
-public class Mess {
+public class Mesh {
 
     /**
      * Name of the 3D object.
@@ -30,7 +30,7 @@ public class Mess {
      */
     private Vector3d rotation;
 
-    public Mess(String name, int numVertices) {
+    public Mesh(String name, int numVertices) {
         this.name = name;
         this.vertices = new Vector3d[0];
         this.position = new Vector3d();

@@ -1,4 +1,4 @@
-package com.davidmiguel.scene_3d.messes;
+package com.davidmiguel.scene_3d.meshes;
 
 import javax.vecmath.Vector3d;
 
@@ -8,9 +8,9 @@ import javax.vecmath.Vector3d;
  * @author davidmigloz
  * @since 18/06/2016
  */
-public class CubeMess extends Mess {
+public class CubeMesh extends Mesh {
 
-    public CubeMess() {
+    public CubeMesh() {
         super("Cube", 8);
         // Add vertices
         Vector3d[] vertices = new Vector3d[8];
