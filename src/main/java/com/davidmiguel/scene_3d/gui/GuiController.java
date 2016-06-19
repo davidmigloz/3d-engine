@@ -27,6 +27,8 @@ public class GuiController {
     @FXML
     private Label rightStatus;
 
+    private static long t0;
+
     @FXML
     private void initialize() {
         leftStatus.setText("Ready!");
@@ -42,6 +44,7 @@ public class GuiController {
         // Rendering loop (50hz)
         Timeline tl = new Timeline();
         tl.setCycleCount(Animation.INDEFINITE);
+        t0 = System.currentTimeMillis();
         KeyFrame frame = new KeyFrame(Duration.millis(20), event -> {
             // Clear the screen and all associated pixels with white ones
             engine.clear();
@@ -54,6 +57,10 @@ public class GuiController {
             engine.render(camera, meshes);
             // Display them on screen by flushing the back buffer data into the front buffer
             engine.draw();
+            // Update fps info
+            long t1 = System.currentTimeMillis();
+            rightStatus.setText("fps: " + Math.round(1 / ((t1 - t0) / 1000.0)));
+            t0 = t1;
         });
         tl.getKeyFrames().add(frame);
         tl.play();

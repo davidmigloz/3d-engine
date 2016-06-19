@@ -11,7 +11,7 @@ import javax.vecmath.Vector3d;
 public class CubeMesh extends Mesh {
 
     public CubeMesh() {
-        super("Cube", 8);
+        super();
         // Add vertices
         Vector3d[] vertices = new Vector3d[8];
         vertices[0] = new Vector3d(-1, 1, 1);

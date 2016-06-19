@@ -8,6 +8,7 @@ import javax.vecmath.Vector3d;
  * @author davidmigloz
  * @since 18/06/2016
  */
+@SuppressWarnings("WeakerAccess")
 public class Camera {
 
     /**
@@ -29,15 +30,7 @@ public class Camera {
         return position;
     }
 
-    public void setPosition(Vector3d position) {
-        this.position = position;
-    }
-
     public Vector3d getTarget() {
         return target;
-    }
-
-    public void setTarget(Vector3d target) {
-        this.target = target;
     }
 }

@@ -31,7 +31,8 @@ public class Engine {
      */
     public void clear() {
         // Clear canvas
-        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         // Clear backBuffer
         SnapshotParameters params = new SnapshotParameters();
         params.setFill(Color.TRANSPARENT);
@@ -74,15 +75,6 @@ public class Engine {
     }
 
     /**
-     * Put a pixel on backBuffer at specific x,y coordinates.
-     */
-    private void putPixel(int x, int y, Color color) {
-        PixelWriter pw = backBuffer.getPixelWriter();
-        // Write new pixel
-        pw.setColor(x, y, color);
-    }
-
-    /**
      * Project takes some 3D coordinates and transform them in
      * 2D coordinates using the transformation matrix.
      */
@@ -104,7 +96,16 @@ public class Engine {
                 && point.x < gc.getCanvas().getWidth()
                 && point.y < this.gc.getCanvas().getHeight()) {
             // Drawing point
-            this.putPixel((int) point.x, (int) point.y, Color.BLACK);
+            this.putPixel((int) point.x, (int) point.y, Color.WHITE);
         }
+    }
+
+    /**
+     * Put a pixel on backBuffer at specific x,y coordinates.
+     */
+    private void putPixel(int x, int y, Color color) {
+        PixelWriter pw = backBuffer.getPixelWriter();
+        // Write new pixel
+        pw.setColor(x, y, color);
     }
 }

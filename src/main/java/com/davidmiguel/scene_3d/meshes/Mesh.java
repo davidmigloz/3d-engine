@@ -8,12 +8,8 @@ import javax.vecmath.Vector3d;
  * @author davidmigloz
  * @since 18/06/2016
  */
+@SuppressWarnings("WeakerAccess")
 public class Mesh {
-
-    /**
-     * Name of the 3D object.
-     */
-    private String name;
 
     /**
      * Collection of vertices (several vertex or 3D points).
@@ -30,15 +26,10 @@ public class Mesh {
      */
     private Vector3d rotation;
 
-    public Mesh(String name, int numVertices) {
-        this.name = name;
+    public Mesh() {
         this.vertices = new Vector3d[0];
         this.position = new Vector3d();
         this.rotation = new Vector3d();
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Vector3d[] getVertices() {
@@ -53,15 +44,7 @@ public class Mesh {
         return position;
     }
 
-    public void setPosition(Vector3d position) {
-        this.position = position;
-    }
-
     public Vector3d getRotation() {
         return rotation;
-    }
-
-    public void setRotation(Vector3d rotation) {
-        this.rotation = rotation;
     }
 }
