@@ -17,6 +17,11 @@ public class Mesh {
     private Vector3d[] vertices;
 
     /**
+     * Faces of the mesh.
+     */
+    private Face[] faces;
+
+    /**
      * Its position in the 3D world.
      */
     private Vector3d position;
@@ -27,17 +32,26 @@ public class Mesh {
     private Vector3d rotation;
 
     public Mesh() {
-        this.vertices = new Vector3d[0];
-        this.position = new Vector3d();
-        this.rotation = new Vector3d();
+        this.vertices   = new Vector3d[0];
+        this.faces      = new Face[0];
+        this.position   = new Vector3d();
+        this.rotation   = new Vector3d();
     }
 
     public Vector3d[] getVertices() {
         return vertices;
     }
 
+    public Face[] getFaces() {
+        return faces;
+    }
+
     void setVertices(Vector3d[] vertices) {
         this.vertices = vertices;
+    }
+
+    public void setFaces(Face[] faces) {
+        this.faces = faces;
     }
 
     public Vector3d getPosition() {

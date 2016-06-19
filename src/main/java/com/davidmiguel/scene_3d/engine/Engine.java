@@ -1,5 +1,6 @@
 package com.davidmiguel.scene_3d.engine;
 
+import com.davidmiguel.scene_3d.meshes.Face;
 import com.davidmiguel.scene_3d.meshes.Mesh;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
@@ -58,11 +59,18 @@ public class Engine {
             transformMatrix.mul(viewMatrix);
             transformMatrix.mul(projectionMatrix);
 
-            for (Vector3d vertex : mesh.getVertices()) {
+            for (Face face : mesh.getFaces()) {
                 // Project the 3D coordinates into the 2D space
-                Vector2d projectedPoint = this.project(vertex, transformMatrix);
+                Vector3d vertexA = mesh.getVertices()[face.getA()];
+                Vector3d vertexB = mesh.getVertices()[face.getB()];
+                Vector3d vertexC = mesh.getVertices()[face.getC()];
+                Vector2d pixelA = this.project(vertexA, transformMatrix);
+                Vector2d pixelB = this.project(vertexB, transformMatrix);
+                Vector2d pixelC = this.project(vertexC, transformMatrix);
                 // Draw on screen
-                this.drawPoint(projectedPoint);
+                this.drawLine(pixelA, pixelB);
+                this.drawLine(pixelB, pixelC);
+                this.drawLine(pixelC, pixelA);
             }
         }
     }
@@ -85,6 +93,30 @@ public class Engine {
         double x = point.x * gc.getCanvas().getWidth() + gc.getCanvas().getWidth() / 2.0;
         double y = -point.y * gc.getCanvas().getHeight() + gc.getCanvas().getHeight() / 2.0;
         return new Vector2d(x, y);
+    }
+
+    /**
+     * Draw line with Bresenham’s line algorithm.
+     */
+    public void drawLine(Vector2d p1, Vector2d p2) {
+        int x0 = (int)p1.x;
+        int y0 = (int)p1.y;
+        int x1 = (int)p2.x;
+        int y1 = (int)p2.y;
+
+        double dx = Math.abs(x1 - x0);
+        double dy = Math.abs(y1 - y0);
+        double sx = (x0 < x1) ? 1 : -1;
+        double sy = (y0 < y1) ? 1 : -1;
+        double err = dx - dy;
+
+        while (true) {
+            drawPoint(new Vector2d(x0, y0));
+            if ((x0 == x1) && (y0 == y1)) break;
+            double e2 = 2 * err;
+            if (e2 > -dy) { err -= dy; x0 += sx; }
+            if (e2 < dx) { err += dx; y0 += sy; }
+        }
     }
 
     /**

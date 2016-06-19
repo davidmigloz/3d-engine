@@ -1,11 +1,12 @@
-package com.davidmiguel.scene_3d.engine;
+package com.davidmiguel.scene_3d.meshes;
 
 /**
- * Face of a 3d object.
+ * Triangle face of a 3d object. It contains the three vertices of the mesh that form a triangle.
  *
  * @author davidmigloz
  * @since 19/06/2016
  */
+@SuppressWarnings("WeakerAccess")
 public class Face {
 
     private int a;
