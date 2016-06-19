@@ -2,6 +2,7 @@ package com.davidmiguel.scene_3d.engine;
 
 import com.davidmiguel.scene_3d.meshes.Face;
 import com.davidmiguel.scene_3d.meshes.Mesh;
+import com.davidmiguel.scene_3d.utils.MathUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;

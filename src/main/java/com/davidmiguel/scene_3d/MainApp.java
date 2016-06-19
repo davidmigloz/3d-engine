@@ -2,7 +2,7 @@ package com.davidmiguel.scene_3d;
 
 import com.davidmiguel.scene_3d.engine.Camera;
 import com.davidmiguel.scene_3d.engine.Engine;
-import com.davidmiguel.scene_3d.gui.GuiController;
+import com.davidmiguel.scene_3d.view.GuiController;
 import com.davidmiguel.scene_3d.meshes.CubeMesh;
 import com.davidmiguel.scene_3d.meshes.Mesh;
 import javafx.application.Application;

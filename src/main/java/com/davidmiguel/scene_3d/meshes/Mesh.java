@@ -46,7 +46,7 @@ public class Mesh {
         return faces;
     }
 
-    void setVertices(Vector3d[] vertices) {
+    public void setVertices(Vector3d[] vertices) {
         this.vertices = vertices;
     }
 

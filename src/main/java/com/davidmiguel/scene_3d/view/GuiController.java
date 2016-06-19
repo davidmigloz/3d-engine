@@ -1,4 +1,4 @@
-package com.davidmiguel.scene_3d.gui;
+package com.davidmiguel.scene_3d.view;
 
 import com.davidmiguel.scene_3d.engine.Camera;
 import com.davidmiguel.scene_3d.engine.Engine;

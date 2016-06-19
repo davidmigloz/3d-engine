@@ -1,4 +1,4 @@
-package com.davidmiguel.scene_3d.engine;
+package com.davidmiguel.scene_3d.utils;
 
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
