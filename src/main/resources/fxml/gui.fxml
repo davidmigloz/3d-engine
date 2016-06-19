@@ -19,11 +19,16 @@
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
-                  <MenuItem fx:id="openMesh" mnemonicParsing="false" onAction="#handleOpenMesh" text="Open mesh…" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleOpenMesh" text="Open mesh…" />
                   <Menu mnemonicParsing="false" text="Meshes">
                      <items>
-                        <MenuItem fx:id="cube" mnemonicParsing="false" text="Cube" />
-                        <MenuItem fx:id="cylinder" mnemonicParsing="false" text="Cylinder" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleOpenCube" text="Cube" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleOpenUVSphere" text="UV Sphere" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleOpenICOSphere" text="ICO Sphere" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleOpenCylinder" text="Cylinder" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleOpenCone" text="Cone" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleOpenTorus" text="Torus" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleOpenSuzanne" text="Suzanne" />
                      </items>
                   </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />

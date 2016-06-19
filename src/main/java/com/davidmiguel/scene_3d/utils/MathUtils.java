@@ -88,9 +88,9 @@ public class MathUtils {
     /**
      * Rotates a matrix using yaw, pitch and roll values.
      *
-     * @param yaw   yaw rotation value
-     * @param pitch pitch rotation value
-     * @param roll  roll rotation value
+     * @param yaw   yaw rotation value , in radians
+     * @param pitch pitch rotation value, in radians
+     * @param roll  roll rotation value, in radians
      * @return rotated matrix
      */
     public static Matrix4d rotationYawPitchRoll(double yaw, double pitch, double roll) {
@@ -103,7 +103,7 @@ public class MathUtils {
     /**
      * Rotates a matrix around X axis.
      *
-     * @param angle angle of the rotation
+     * @param angle angle of the rotation , in radians
      * @return rotated matrix
      */
     public static Matrix4d rotationX(double angle) {
@@ -122,7 +122,7 @@ public class MathUtils {
     /**
      * Rotates a matrix around Y axis.
      *
-     * @param angle angle of the rotation
+     * @param angle angle of the rotation , in radians
      * @return rotated matrix
      */
     public static Matrix4d rotationY(double angle) {
@@ -141,7 +141,7 @@ public class MathUtils {
     /**
      * Rotates a matrix around Z axis.
      *
-     * @param angle angle of the rotation
+     * @param angle angle of the rotation, in radians
      * @return rotated matrix
      */
     public static Matrix4d rotationZ(double angle) {

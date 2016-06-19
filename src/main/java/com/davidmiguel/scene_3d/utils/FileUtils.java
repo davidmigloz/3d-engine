@@ -23,9 +23,16 @@ public class FileUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
-    public static Mesh[] parseMeshFromJSON(File json) {
+    /**
+     * Import a mesh from a babylon json file.
+     * https://doc.babylonjs.com/generals/File_Format_Map_(.babylon)
+     *
+     * @param file json file
+     * @return array of meshes
+     */
+    public static Mesh[] parseMeshFromJSON(File file) {
         List<Mesh> meshes = new ArrayList<>();
-        try (JsonReader reader = new JsonReader(new FileReader(json))){
+        try (JsonReader reader = new JsonReader(new FileReader(file.getAbsolutePath()))){
             // Read JSON
             reader.beginObject();
             while (reader.hasNext()) {
@@ -48,6 +55,7 @@ public class FileUtils {
         List<Double> verticesList = new ArrayList<>(0);
         List<Integer> facesList = new ArrayList<>(0);
         List<Double> positionList = new ArrayList<>(0);
+        List<Double> rotationList = new ArrayList<>(0);
         int uvCount = 0;
 
         // Parse object
@@ -63,6 +71,9 @@ public class FileUtils {
                 case "position":
                     positionList = readDoubleArray(reader);
                     break;
+                case "rotation":
+                    rotationList = readDoubleArray(reader);
+                    break;
                 case "uvCount":
                     uvCount = reader.nextInt();
                     break;
@@ -74,7 +85,7 @@ public class FileUtils {
         reader.endObject();
 
         // Build mesh
-        int verticesStep = 1; // vertices array step depends on the number of texture's coordinates per vertex
+        int verticesStep; // vertices array step depends on the number of texture's coordinates per vertex
         switch (uvCount) {
             case 0:
                 verticesStep = 6;
@@ -84,6 +95,9 @@ public class FileUtils {
                 break;
             case 2:
                 verticesStep = 10;
+                break;
+            default:
+                verticesStep = 3; // For my own format (uvCount=-1) (no texture information)
                 break;
         }
         // Number of vertices
@@ -114,6 +128,10 @@ public class FileUtils {
         mesh.getPosition().x = positionList.get(0);
         mesh.getPosition().y = positionList.get(1);
         mesh.getPosition().z = positionList.get(2);
+        // Set rotation
+        mesh.getRotation().x = rotationList.get(0);
+        mesh.getRotation().y = rotationList.get(1);
+        mesh.getRotation().z = rotationList.get(2);
         return mesh;
     }
 
@@ -121,29 +139,29 @@ public class FileUtils {
      * Read list of doubles from JSON array.
      */
     private static List<Double> readDoubleArray(JsonReader reader) throws IOException {
-        List<Double> vertices = new ArrayList<>();
+        List<Double> list = new ArrayList<>();
 
         reader.beginArray();
         while (reader.hasNext()) {
-            vertices.add(reader.nextDouble());
+            list.add(reader.nextDouble());
         }
         reader.endArray();
 
-        return vertices;
+        return list;
     }
 
     /**
      * Read list of integers from JSON array.
      */
     private static List<Integer> readListIntegers(JsonReader reader) throws IOException {
-        List<Integer> faces = new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
 
         reader.beginArray();
         while (reader.hasNext()) {
-            faces.add(reader.nextInt());
+            list.add(reader.nextInt());
         }
         reader.endArray();
 
-        return faces;
+        return list;
     }
 }

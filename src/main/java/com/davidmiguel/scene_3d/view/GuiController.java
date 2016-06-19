@@ -10,13 +10,13 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import javax.vecmath.Vector3d;
 import java.io.File;
+import java.net.URISyntaxException;
 
 /**
  * GuiController.
@@ -26,16 +26,6 @@ import java.io.File;
  */
 public class GuiController {
 
-    @FXML
-    private MenuItem openMesh;
-    @FXML
-    private MenuItem cube;
-    @FXML
-    private MenuItem cylinder;
-    @FXML
-    private MenuItem quit;
-    @FXML
-    private MenuItem about;
     @FXML
     private Canvas canvas;
     @FXML
@@ -58,6 +48,7 @@ public class GuiController {
         meshes = new Mesh[0];
         camera = new Camera(new Vector3d(0, 0, 10), new Vector3d(0, 0, 0));
         startRenderingLoop();
+        status.setText("Ready!");
     }
 
     @FXML
@@ -74,8 +65,44 @@ public class GuiController {
         }
     }
 
+    @FXML
+    private void handleOpenCube() throws URISyntaxException {
+        this.addMeshesFromFile(new File(getClass().getResource("/meshes/Cube.json").toURI()));
+    }
+
+    @FXML
+    private void handleOpenUVSphere() throws URISyntaxException {
+        this.addMeshesFromFile(new File(getClass().getResource("/meshes/UVSphere.json").toURI()));
+    }
+
+    @FXML
+    private void handleOpenICOSphere() throws URISyntaxException {
+        this.addMeshesFromFile(new File(getClass().getResource("/meshes/ICOSphere.json").toURI()));
+    }
+
+    @FXML
+    private void handleOpenCylinder() throws URISyntaxException {
+        this.addMeshesFromFile(new File(getClass().getResource("/meshes/Cylinder.json").toURI()));
+    }
+
+    @FXML
+    private void handleOpenCone() throws URISyntaxException {
+        this.addMeshesFromFile(new File(getClass().getResource("/meshes/Cone.json").toURI()));
+    }
+
+    @FXML
+    private void handleOpenTorus() throws URISyntaxException {
+        this.addMeshesFromFile(new File(getClass().getResource("/meshes/Torus.json").toURI()));
+    }
+
+    @FXML
+    private void handleOpenSuzanne() throws URISyntaxException {
+        this.addMeshesFromFile(new File(getClass().getResource("/meshes/Suzanne.json").toURI()));
+    }
+
     private void addMeshesFromFile(File f) {
         meshes = FileUtils.parseMeshFromJSON(f);
+        status.setText(f.getName() + " loaded!");
     }
 
     private void startRenderingLoop() {
