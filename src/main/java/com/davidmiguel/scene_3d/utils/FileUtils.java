@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Methods to manage the import of models.
+ * Methods to manage the import of meshes from file.
  *
  * @author davidmigloz
  * @since 19/06/2016
@@ -24,7 +24,7 @@ public class FileUtils {
     private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
     /**
-     * Import a mesh from a babylon json file.
+     * Import a mesh from a babylon json file or our own json format (based on babylon json).
      * https://doc.babylonjs.com/generals/File_Format_Map_(.babylon)
      *
      * @param file json file

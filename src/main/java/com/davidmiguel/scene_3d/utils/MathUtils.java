@@ -173,4 +173,23 @@ public class MathUtils {
         result.m32 = z;
         return result;
     }
+
+    /**
+     * Clamping values to keep them between 0 and 1.
+     */
+    public static float clamp(float value) {
+        float min = 0, max = 1;
+        return Math.max(min, Math.min(value, max));
+    }
+
+    /**
+     * Interpolating the value between 2 vertices.
+     *
+     * @param min      starting point
+     * @param max      ending point
+     * @param gradient % between the 2 points
+     */
+    public static float interpolate(float min, float max, float gradient) {
+        return min + (max - min) * clamp(gradient);
+    }
 }
