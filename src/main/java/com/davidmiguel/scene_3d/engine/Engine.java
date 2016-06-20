@@ -28,9 +28,24 @@ public class Engine {
     }
 
     /**
+     * Flush the back buffer into the canvas.
+     */
+    public void draw(Camera camera, Mesh[] meshes) {
+        if (meshes == null || meshes.length == 0 || camera == null) {
+            return;
+        }
+        // Clear the screen and all associated pixels with white ones
+        this.clear();
+        // Render them into the back buffer by doing the required matrix operations
+        this.render(camera, meshes);
+        // Display them on screen by flushing the back buffer data into the front buffer
+        gc.drawImage(backBuffer, 0, 0);
+    }
+
+    /**
      * This function is called to clear the back buffer and canvas.
      */
-    public void clear() {
+    private void clear() {
         // Clear canvas
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
@@ -43,11 +58,7 @@ public class Engine {
     /**
      * Re-compute each vertex projection during each frame.
      */
-    public void render(Camera camera, Mesh[] meshes) {
-        if (meshes == null || meshes.length == 0 || camera == null) {
-            return;
-        }
-
+    private void render(Camera camera, Mesh[] meshes) {
         Matrix4d viewMatrix = MathUtils.lookAtLH(camera.getPosition(), camera.getTarget(), MathUtils.UP);
         Matrix4d projectionMatrix = MathUtils.perspectiveFovLH(
                 0.78, gc.getCanvas().getWidth() / gc.getCanvas().getHeight(), 0.01, 1.0);
@@ -84,12 +95,6 @@ public class Engine {
         }
     }
 
-    /**
-     * Flush the back buffer into the canvas.
-     */
-    public void draw() {
-        gc.drawImage(backBuffer, 0, 0);
-    }
 
     /**
      * Project takes some 3D coordinates and transform them in

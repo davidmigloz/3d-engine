@@ -33,6 +33,7 @@ public class GuiController {
     @FXML
     private Label fps;
 
+    private Timeline tl;
     private Engine engine;
     private Mesh[] meshes;
     private Camera camera;
@@ -44,10 +45,11 @@ public class GuiController {
         status.setText("Starting...");
         fps.setText("0");
         canvas.getGraphicsContext2D().setLineWidth(1);
+        canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         engine = new Engine(canvas.getGraphicsContext2D());
         meshes = new Mesh[0];
         camera = new Camera(new Vector3d(0, 0, 10), new Vector3d(0, 0, 0));
-        startRenderingLoop();
+        setupRenderingLoop();
         status.setText("Ready!");
     }
 
@@ -103,31 +105,28 @@ public class GuiController {
     private void addMeshesFromFile(File f) {
         meshes = FileUtils.parseMeshFromJSON(f);
         status.setText(f.getName() + " loaded!");
+        // Start rendering loop
+        tl.play();
     }
 
-    private void startRenderingLoop() {
+    private void setupRenderingLoop() {
         // Rendering loop (50hz)
-        Timeline tl = new Timeline();
+        tl = new Timeline();
         tl.setCycleCount(Animation.INDEFINITE);
         t0 = System.currentTimeMillis(); // For computation of fps
         KeyFrame frame = new KeyFrame(Duration.millis(20), event -> {
-            // Clear the screen and all associated pixels with white ones
-            engine.clear();
             //  Update the various position & rotation values of our meshes
             for (Mesh mesh : meshes) {
                 mesh.getRotation().x += 0.01;
                 mesh.getRotation().y += 0.01;
             }
-            // Render them into the back buffer by doing the required matrix operations
-            engine.render(camera, meshes);
-            // Display them on screen by flushing the back buffer data into the front buffer
-            engine.draw();
+            // Draw frame
+            engine.draw(camera, meshes);
             // Update fps info
             long t1 = System.currentTimeMillis();
             fps.setText(Long.toString(Math.round(1 / ((t1 - t0) / 1000.0))));
             t0 = t1;
         });
         tl.getKeyFrames().add(frame);
-        tl.play();
     }
 }
