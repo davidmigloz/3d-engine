@@ -17,6 +17,7 @@ import javafx.util.Duration;
 import javax.vecmath.Vector3d;
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.Stack;
 
 /**
  * GuiController.
@@ -44,7 +45,7 @@ public class GuiController {
     private Engine engine;
     private Mesh[] meshes;
     private Camera camera;
-    private static long t0;
+    private Stack<Long> previousFramesDuration;
 
     @FXML
     private void initialize() {
@@ -53,6 +54,7 @@ public class GuiController {
         canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         rotation = false;
         selectedRender = Engine.RenderMode.RASTERIZATION;
+        previousFramesDuration = new Stack<>();
         // Config 3d engine
         engine = new Engine(canvas.getGraphicsContext2D());
         meshes = new Mesh[0];
@@ -201,11 +203,10 @@ public class GuiController {
     }
 
     private void setupRenderingLoop() {
-        // Rendering loop (50hz)
+        // Rendering loop (60hz)
         tl = new Timeline();
         tl.setCycleCount(Animation.INDEFINITE);
-        t0 = System.currentTimeMillis(); // For computation of fps
-        KeyFrame frame = new KeyFrame(Duration.millis(20), event -> {
+        KeyFrame frame = new KeyFrame(Duration.millis(17), event -> {
             //  Update the various position & rotation values of our meshes
             if(rotation) {
                 for (Mesh mesh : meshes) {
@@ -216,10 +217,23 @@ public class GuiController {
             // Draw frame
             engine.draw(camera, meshes, selectedRender);
             // Update fps info
-            long t1 = System.currentTimeMillis();
-            fps.setText(Long.toString(Math.round(1 / ((t1 - t0) / 1000.0))));
-            t0 = t1;
+            handleMetrics();
         });
         tl.getKeyFrames().add(frame);
+    }
+
+    /**
+     * Compute the average FPS on 60 samples.
+     */
+    private void handleMetrics() {
+        previousFramesDuration.push(System.currentTimeMillis());
+        if(previousFramesDuration.size() == 60) {
+            // Calculate average of last 60 samples
+            long sum = 0;
+            for(int i = 0; i < 30; i++) {
+                sum += previousFramesDuration.pop() - previousFramesDuration.pop();
+            }
+            fps.setText(Long.toString(Math.round(1 / ((sum / 30.0) / 1000.0))));
+        }
     }
 }
