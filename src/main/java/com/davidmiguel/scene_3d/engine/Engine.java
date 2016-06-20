@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
+import java.util.Arrays;
 
 /**
  * 3D engine.
@@ -24,11 +25,22 @@ public class Engine {
         WIREFRAME, RASTERIZATION
     }
 
+    /**
+     * Image where we perform all transformations.
+     */
     private WritableImage backBuffer;
+    /**
+     * Canvas where we flush the backBuffer with a fixed frequency.
+     */
     private GraphicsContext gc;
+    /**
+     * Use for Z-Buffering.
+     */
+    private double[][] depthBuffer;
 
     public Engine(GraphicsContext gc) {
         this.gc = gc;
+        this.depthBuffer = new double[(int) gc.getCanvas().getWidth()][(int) gc.getCanvas().getWidth()];
     }
 
     /**
@@ -57,6 +69,10 @@ public class Engine {
         SnapshotParameters params = new SnapshotParameters();
         params.setFill(Color.TRANSPARENT);
         backBuffer = gc.getCanvas().snapshot(params, null);
+        // Clear depthBuffer
+        for (double[] row: depthBuffer) {
+            Arrays.fill(row, Double.MAX_VALUE);
+        }
     }
 
     /**
@@ -91,16 +107,15 @@ public class Engine {
                 // Draw
                 switch (mode) {
                     case WIREFRAME:
-                        DrawUtils.drawLine(backBuffer, pixelA, pixelB, Color.WHITE);
-                        DrawUtils.drawLine(backBuffer, pixelB, pixelC, Color.WHITE);
-                        DrawUtils.drawLine(backBuffer, pixelC, pixelA, Color.WHITE);
+                        DrawUtils.drawFilledTriangle(backBuffer, pixelA, pixelB, pixelC, Color.WHITE);
                         break;
                     case RASTERIZATION:
                         double color = (0.25
                                 + ((indexFaces % mesh.getFaces().length)
                                 / (double) mesh.getFaces().length)
                                 * 0.75);
-                        DrawUtils.drawTriangle(backBuffer, pixelA, pixelB, pixelC, new Color(color, color, color, 1));
+                        DrawUtils.drawFilledTriangle(backBuffer, pixelA, pixelB, pixelC,
+                                depthBuffer, new Color(color, color, color, 1.0));
                         indexFaces++;
                         break;
                 }

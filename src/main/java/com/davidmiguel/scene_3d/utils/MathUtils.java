@@ -177,8 +177,8 @@ public class MathUtils {
     /**
      * Clamping values to keep them between 0 and 1.
      */
-    public static float clamp(float value) {
-        float min = 0, max = 1;
+    public static double clamp(double value) {
+        double min = 0, max = 1;
         return Math.max(min, Math.min(value, max));
     }
 
@@ -189,7 +189,7 @@ public class MathUtils {
      * @param max      ending point
      * @param gradient % between the 2 points
      */
-    public static float interpolate(float min, float max, float gradient) {
+    public static double interpolate(double min, double max, double gradient) {
         return min + (max - min) * clamp(gradient);
     }
 }
