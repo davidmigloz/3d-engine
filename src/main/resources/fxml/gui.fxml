@@ -16,85 +16,148 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.davidmiguel.scene_3d.view.GuiController">
-  <children>
-      <MenuBar>
-         <menus>
-            <Menu mnemonicParsing="false" text="File">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#handleOpenMesh" text="Open mesh…" />
-                  <Menu mnemonicParsing="false" text="Meshes">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleOpenCube" text="Cube" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleOpenUVSphere" text="UV Sphere" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleOpenICOSphere" text="ICO Sphere" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleOpenCylinder" text="Cylinder" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleOpenCone" text="Cone" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleOpenTorus" text="Torus" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleOpenSuzanne" text="Suzanne" />
-                     </items>
-                  </Menu>
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
-               </items>
+<VBox xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.davidmiguel.scene_3d.view.GuiController">
+    <MenuBar>
+        <Menu mnemonicParsing="false" text="File">
+            <MenuItem mnemonicParsing="false" onAction="#handleOpenMesh" text="Open mesh…"/>
+            <Menu mnemonicParsing="false" text="Meshes">
+                <MenuItem mnemonicParsing="false" onAction="#handleOpenCube" text="Cube">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="DIGIT1" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#handleOpenUVSphere" text="UV Sphere">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="DIGIT2" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#handleOpenICOSphere" text="ICO Sphere">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="DIGIT3" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#handleOpenCylinder" text="Cylinder">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="DIGIT4" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#handleOpenCone" text="Cone">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="DIGIT5" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#handleOpenTorus" text="Torus">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="DIGIT7" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#handleOpenSuzanne" text="Suzanne">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="DIGIT8" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
             </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-               <items>
-                  <MenuItem fx:id="play" mnemonicParsing="false" onAction="#handlePlay" text="Play">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-                  <Menu mnemonicParsing="false" text="Rendering">
-                     <items>
-                        <RadioMenuItem mnemonicParsing="false" onAction="#handleSelectRender" text="Wireframe">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="DIGIT1" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                           </accelerator>
-                           <toggleGroup>
-                              <ToggleGroup fx:id="render" />
-                           </toggleGroup>
-                        </RadioMenuItem>
-                        <RadioMenuItem mnemonicParsing="false" onAction="#handleSelectRender" selected="true" text="Rasterization" toggleGroup="$render">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="DIGIT2" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                           </accelerator>
-                        </RadioMenuItem>
-                     </items>
-                  </Menu>
-               </items>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit"/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+            <MenuItem fx:id="play" mnemonicParsing="false" onAction="#handlePlay" text="Play">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="UP"/>
+                </accelerator>
+            </MenuItem>
+            <Menu mnemonicParsing="false" text="Rendering">
+                <RadioMenuItem mnemonicParsing="false" onAction="#handleSelectRender" text="Wireframe">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="DIGIT1" control="UP" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                    <toggleGroup>
+                        <ToggleGroup fx:id="render"/>
+                    </toggleGroup>
+                </RadioMenuItem>
+                <RadioMenuItem mnemonicParsing="false" onAction="#handleSelectRender" selected="true"
+                               text="Rasterization" toggleGroup="$render">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="DIGIT2" control="UP" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </RadioMenuItem>
             </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="About" />
-               </items>
+            <Menu mnemonicParsing="false" text="Camera">
+                <MenuItem mnemonicParsing="false" onAction="#handleCameraUp" text="Up">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="UP" control="UP" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#handleCameraDown" text="Down">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="DOWN" control="UP" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#handleCameraRight" text="Right">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="RIGHT" control="UP" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#handleCameraLeft" text="Left">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="LEFT" control="UP" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#handleCameraBackward" text="Backward">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="Q" control="UP" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
             </Menu>
-         </menus>
-      </MenuBar>
-      <Canvas fx:id="canvas" height="550.0" width="900.0" />
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+            <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="About"/>
+        </Menu>
+    </MenuBar>
+    <Canvas fx:id="canvas" height="550.0" width="900.0"/>
     <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
-      <children>
-        <Label fx:id="status" maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Loading..." HBox.hgrow="ALWAYS">
-          <font>
-            <Font size="11.0" fx:id="x3" />
-          </font>
-          <textFill>
-            <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
-          </textFill>
+        <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+        </padding>
+        <Label fx:id="status" maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Loading..."
+               HBox.hgrow="ALWAYS">
+            <font>
+                <Font size="11.0"/>
+            </font>
+            <textFill>
+                <Color blue="0.625" green="0.625" red="0.625"/>
+            </textFill>
         </Label>
-        <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-        <Label font="$x3" maxWidth="-1.0" text="fps:" textFill="$x4" HBox.hgrow="NEVER" />
-            <Label fx:id="fps" layoutX="849.0" layoutY="13.0" maxWidth="-1.0" prefWidth="20.0" text="0">
-               <font>
-                  <Font size="11.0" fx:id="x31" />
-               </font>
-               <textFill>
-                  <Color blue="0.625" green="0.625" red="0.625" fx:id="x41" />
-               </textFill>
-            </Label>
-      </children>
-      <padding>
-        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-      </padding>
+        <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS"/>
+        <Label maxWidth="-1.0" text="fps:" HBox.hgrow="NEVER"/>
+        <Label fx:id="fps" layoutX="849.0" layoutY="13.0" maxWidth="-1.0" prefWidth="20.0" text="0">
+            <font>
+                <Font size="11.0" />
+            </font>
+            <textFill>
+                <Color blue="0.625" green="0.625" red="0.625" />
+            </textFill>
+        </Label>
     </HBox>
-  </children>
 </VBox>

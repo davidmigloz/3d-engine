@@ -49,8 +49,6 @@ public class GuiController {
     @FXML
     private void initialize() {
         // Initial setup
-        status.setText("Starting...");
-        fps.setText("0");
         canvas.getGraphicsContext2D().setLineWidth(1);
         canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         rotation = false;
@@ -60,7 +58,7 @@ public class GuiController {
         meshes = new Mesh[0];
         camera = new Camera(new Vector3d(0, 0, 10), new Vector3d(0, 0, 0));
         setupRenderingLoop();
-        status.setText("Ready!");
+        status.setText("Ready! Open mesh...");
     }
 
     @FXML
@@ -141,6 +139,42 @@ public class GuiController {
     }
 
     @FXML
+    private void handleCameraUp() {
+        camera.getPosition().y -= 0.05;
+        camera.getTarget().y -= 0.05;
+    }
+
+    @FXML
+    private void handleCameraDown() {
+        camera.getPosition().y += 0.05;
+        camera.getTarget().y += 0.05;
+    }
+
+    @FXML
+    private void handleCameraRight() {
+        camera.getPosition().x += 0.05;
+        camera.getTarget().x += 0.05;
+    }
+
+    @FXML
+    private void handleCameraLeft() {
+        camera.getPosition().x -= 0.05;
+        camera.getTarget().x -= 0.05;
+    }
+
+    @FXML
+    private void handleCameraForward() {
+        camera.getPosition().z -= 0.2;
+        camera.getTarget().z -= 0.2;
+    }
+
+    @FXML
+    private void handleCameraBackward() {
+        camera.getPosition().z += 0.2;
+        camera.getTarget().z += 0.2;
+    }
+
+    @FXML
     private void handleExit() {
         tl.stop();
         System.exit(0);
@@ -158,11 +192,12 @@ public class GuiController {
     private void addMeshesFromFile(File f) {
         meshes = FileUtils.parseMeshFromJSON(f);
         status.setText(f.getName() + " loaded!");
-        // Start rendering loop
+        // Start rendering loop, start rotation and reset camera
         tl.play();
         if(!rotation) {
             handlePlay();
         }
+        camera = new Camera(new Vector3d(0, 0, 10), new Vector3d(0, 0, 0));
     }
 
     private void setupRenderingLoop() {
