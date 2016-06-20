@@ -20,6 +20,10 @@ import javax.vecmath.Vector3d;
  */
 public class Engine {
 
+    public enum RenderMode {
+        WIREFRAME, RASTERIZATION
+    }
+
     private WritableImage backBuffer;
     private GraphicsContext gc;
 
@@ -30,14 +34,14 @@ public class Engine {
     /**
      * Flush the back buffer into the canvas.
      */
-    public void draw(Camera camera, Mesh[] meshes) {
+    public void draw(Camera camera, Mesh[] meshes, RenderMode mode) {
         if (meshes == null || meshes.length == 0 || camera == null) {
             return;
         }
         // Clear the screen and all associated pixels with white ones
         this.clear();
         // Render them into the back buffer by doing the required matrix operations
-        this.render(camera, meshes);
+        this.render(camera, meshes, mode);
         // Display them on screen by flushing the back buffer data into the front buffer
         gc.drawImage(backBuffer, 0, 0);
     }
@@ -58,7 +62,7 @@ public class Engine {
     /**
      * Re-compute each vertex projection during each frame.
      */
-    private void render(Camera camera, Mesh[] meshes) {
+    private void render(Camera camera, Mesh[] meshes, RenderMode mode) {
         Matrix4d viewMatrix = MathUtils.lookAtLH(camera.getPosition(), camera.getTarget(), MathUtils.UP);
         Matrix4d projectionMatrix = MathUtils.perspectiveFovLH(
                 0.78, gc.getCanvas().getWidth() / gc.getCanvas().getHeight(), 0.01, 1.0);
@@ -84,13 +88,22 @@ public class Engine {
                 Vector3d pixelA = this.project(vertexA, transformMatrix);
                 Vector3d pixelB = this.project(vertexB, transformMatrix);
                 Vector3d pixelC = this.project(vertexC, transformMatrix);
-                // Draw triangle
-                double color = (0.25
-                        + ((indexFaces % mesh.getFaces().length)
-                        / (double) mesh.getFaces().length)
-                        * 0.75);
-                DrawUtils.drawTriangle(backBuffer, pixelA, pixelB, pixelC, new Color(color, color, color, 1));
-                indexFaces++;
+                // Draw
+                switch (mode) {
+                    case WIREFRAME:
+                        DrawUtils.drawLine(backBuffer, pixelA, pixelB, Color.WHITE);
+                        DrawUtils.drawLine(backBuffer, pixelB, pixelC, Color.WHITE);
+                        DrawUtils.drawLine(backBuffer, pixelC, pixelA, Color.WHITE);
+                        break;
+                    case RASTERIZATION:
+                        double color = (0.25
+                                + ((indexFaces % mesh.getFaces().length)
+                                / (double) mesh.getFaces().length)
+                                * 0.75);
+                        DrawUtils.drawTriangle(backBuffer, pixelA, pixelB, pixelC, new Color(color, color, color, 1));
+                        indexFaces++;
+                        break;
+                }
             }
         }
     }

@@ -32,12 +32,7 @@ public class DrawUtils {
     /**
      * Draw line with Bresenham’s line algorithm.
      */
-    public static void drawLine(WritableImage img, Vector2d p1, Vector2d p2, Color color) {
-        int x0 = (int) p1.x;
-        int y0 = (int) p1.y;
-        int x1 = (int) p2.x;
-        int y1 = (int) p2.y;
-
+    public static void drawLine(WritableImage img, int x0, int y0, int x1, int y1, Color color) {
         double dx = Math.abs(x1 - x0);
         double dy = Math.abs(y1 - y0);
         double sx = (x0 < x1) ? 1 : -1;
@@ -57,6 +52,20 @@ public class DrawUtils {
                 y0 += sy;
             }
         }
+    }
+
+    /**
+     * Draw line with Bresenham’s line algorithm.
+     */
+    public static void drawLine(WritableImage img, Vector2d p1, Vector2d p2, Color color) {
+        drawLine(img, (int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y, color);
+    }
+
+    /**
+     * Draw line with Bresenham’s line algorithm.
+     */
+    public static void drawLine(WritableImage img, Vector3d p1, Vector3d p2, Color color) {
+        drawLine(img, (int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y, color);
     }
 
     public static void drawTriangle(WritableImage img, Vector3d p1, Vector3d p2, Vector3d p3, Color color) {

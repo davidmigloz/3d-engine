@@ -9,7 +9,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -32,8 +32,15 @@ public class GuiController {
     private Label status;
     @FXML
     private Label fps;
+    @FXML
+    private ToggleGroup render;
+    @FXML
+    private MenuItem play;
+
 
     private Timeline tl;
+    private boolean rotation;
+    private Engine.RenderMode selectedRender;
     private Engine engine;
     private Mesh[] meshes;
     private Camera camera;
@@ -46,6 +53,9 @@ public class GuiController {
         fps.setText("0");
         canvas.getGraphicsContext2D().setLineWidth(1);
         canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        rotation = false;
+        selectedRender = Engine.RenderMode.RASTERIZATION;
+        // Config 3d engine
         engine = new Engine(canvas.getGraphicsContext2D());
         meshes = new Mesh[0];
         camera = new Camera(new Vector3d(0, 0, 10), new Vector3d(0, 0, 0));
@@ -102,11 +112,57 @@ public class GuiController {
         this.addMeshesFromFile(new File(getClass().getResource("/meshes/Suzanne.json").toURI()));
     }
 
+    @FXML
+    private void handlePlay() {
+        if (rotation) {
+            rotation = false;
+            play.setText("Play");
+        } else {
+            rotation = true;
+            play.setText("Pause");
+        }
+    }
+
+    @FXML
+    private void handleSelectRender() {
+        for (Toggle t : render.getToggles()) {
+            if (t.isSelected()) {
+                switch (((RadioMenuItem) t).getText()) {
+                    case "Wireframe":
+                        selectedRender = Engine.RenderMode.WIREFRAME;
+                        break;
+                    case "Rasterization":
+                        selectedRender = Engine.RenderMode.RASTERIZATION;
+                        break;
+                }
+                break;
+            }
+        }
+    }
+
+    @FXML
+    private void handleExit() {
+        tl.stop();
+        System.exit(0);
+    }
+
+    @FXML
+    private void handleAbout() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("IDEA cipher");
+        alert.setHeaderText("About");
+        alert.setContentText("Author: David Miguel\nWebsite: http://davidmiguel.com/");
+        alert.showAndWait();
+    }
+
     private void addMeshesFromFile(File f) {
         meshes = FileUtils.parseMeshFromJSON(f);
         status.setText(f.getName() + " loaded!");
         // Start rendering loop
         tl.play();
+        if(!rotation) {
+            handlePlay();
+        }
     }
 
     private void setupRenderingLoop() {
@@ -116,12 +172,14 @@ public class GuiController {
         t0 = System.currentTimeMillis(); // For computation of fps
         KeyFrame frame = new KeyFrame(Duration.millis(20), event -> {
             //  Update the various position & rotation values of our meshes
-            for (Mesh mesh : meshes) {
-                mesh.getRotation().x += 0.01;
-                mesh.getRotation().y += 0.01;
+            if(rotation) {
+                for (Mesh mesh : meshes) {
+                    mesh.getRotation().x += 0.01;
+                    mesh.getRotation().y += 0.01;
+                }
             }
             // Draw frame
-            engine.draw(camera, meshes);
+            engine.draw(camera, meshes, selectedRender);
             // Update fps info
             long t1 = System.currentTimeMillis();
             fps.setText(Long.toString(Math.round(1 / ((t1 - t0) / 1000.0))));
