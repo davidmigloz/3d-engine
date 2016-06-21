@@ -13,15 +13,25 @@ class ScanLineData {
     private double ndotlc;
     private double ndotld;
 
-    int getCurrentY() {
+    private double ua;
+    private double ub;
+    private double uc;
+    private double ud;
+
+    private double va;
+    private double vb;
+    private double vc;
+    private double vd;
+
+    public int getCurrentY() {
         return currentY;
     }
 
-    void setCurrentY(int currentY) {
+    public void setCurrentY(int currentY) {
         this.currentY = currentY;
     }
 
-    double getNdotla() {
+    public double getNdotla() {
         return ndotla;
     }
 
@@ -51,5 +61,69 @@ class ScanLineData {
 
     public void setNdotld(double ndotld) {
         this.ndotld = ndotld;
+    }
+
+    public double getUa() {
+        return ua;
+    }
+
+    public void setUa(double ua) {
+        this.ua = ua;
+    }
+
+    public double getUb() {
+        return ub;
+    }
+
+    public void setUb(double ub) {
+        this.ub = ub;
+    }
+
+    public double getUc() {
+        return uc;
+    }
+
+    public void setUc(double uc) {
+        this.uc = uc;
+    }
+
+    public double getUd() {
+        return ud;
+    }
+
+    public void setUd(double ud) {
+        this.ud = ud;
+    }
+
+    public double getVa() {
+        return va;
+    }
+
+    public void setVa(double va) {
+        this.va = va;
+    }
+
+    public double getVb() {
+        return vb;
+    }
+
+    public void setVb(double vb) {
+        this.vb = vb;
+    }
+
+    public double getVc() {
+        return vc;
+    }
+
+    public void setVc(double vc) {
+        this.vc = vc;
+    }
+
+    public double getVd() {
+        return vd;
+    }
+
+    public void setVd(double vd) {
+        this.vd = vd;
     }
 }

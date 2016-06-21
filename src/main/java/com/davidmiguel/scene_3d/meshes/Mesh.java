@@ -31,6 +31,11 @@ public class Mesh {
      */
     private Vector3d rotation;
 
+    /**
+     * Texture of the mesh.
+     */
+    private Texture texture;
+
     public Mesh() {
         this.vertices = new Vertex[0];
         this.faces = new Face[0];
@@ -60,5 +65,13 @@ public class Mesh {
 
     public Vector3d getRotation() {
         return rotation;
+    }
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
 }

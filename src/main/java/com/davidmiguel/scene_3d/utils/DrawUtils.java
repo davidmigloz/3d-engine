@@ -1,5 +1,6 @@
 package com.davidmiguel.scene_3d.utils;
 
+import com.davidmiguel.scene_3d.meshes.Texture;
 import com.davidmiguel.scene_3d.meshes.Vertex;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -64,15 +65,21 @@ public class DrawUtils {
         drawLine(img, (int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y, color);
     }
 
-    public static void drawFilledTriangle(WritableImage img, Vertex v1, Vertex v2, Vertex v3, Color color) {
+    /**
+     * Draw a triangle drawing its edges.
+     */
+    public static void drawTriangle(WritableImage img, Vertex v1, Vertex v2, Vertex v3, Color color) {
         drawLine(img, v1.getCoordinates(), v2.getCoordinates(), color);
         drawLine(img, v2.getCoordinates(), v3.getCoordinates(), color);
         drawLine(img, v3.getCoordinates(), v1.getCoordinates(), color);
     }
 
+    /**
+     * Draw a filled triangle with texture using scan-line algorithm.
+     */
     @SuppressWarnings("Duplicates")
     public static void drawFilledTriangle(WritableImage img, double[][] depthBuffer,
-                                          Vertex v1, Vertex v2, Vertex v3, Color color) {
+                                          Vertex v1, Vertex v2, Vertex v3, Color color, Texture texture) {
         // Sorting the points in order to always have this order on screen p1, p2 & p3
         // with p1 always up (thus having the Y the lowest possible to be near the top screen)
         // then p2 between p1 & p3
@@ -134,13 +141,35 @@ public class DrawUtils {
                     data.setNdotlb(nl3);
                     data.setNdotlc(nl1);
                     data.setNdotld(nl2);
-                    processScanLine(img, depthBuffer, data, v1, v3, v1, v2, color);
+                    if(texture != null) {
+                        data.setUa(v1.getTextureCoordinates().x);
+                        data.setUb(v3.getTextureCoordinates().x);
+                        data.setUc(v1.getTextureCoordinates().x);
+                        data.setUd(v2.getTextureCoordinates().x);
+
+                        data.setVa(v1.getTextureCoordinates().y);
+                        data.setVb(v3.getTextureCoordinates().y);
+                        data.setVc(v1.getTextureCoordinates().y);
+                        data.setVd(v2.getTextureCoordinates().y);
+                    }
+                    processScanLine(img, depthBuffer, data, v1, v3, v1, v2, color, texture);
                 } else {
                     data.setNdotla(nl1);
                     data.setNdotlb(nl3);
                     data.setNdotlc(nl2);
                     data.setNdotld(nl3);
-                    processScanLine(img, depthBuffer, data, v1, v3, v2, v3, color);
+                    if(texture != null) {
+                        data.setUa(v1.getTextureCoordinates().x);
+                        data.setUb(v3.getTextureCoordinates().x);
+                        data.setUc(v2.getTextureCoordinates().x);
+                        data.setUd(v3.getTextureCoordinates().x);
+
+                        data.setVa(v1.getTextureCoordinates().y);
+                        data.setVb(v3.getTextureCoordinates().y);
+                        data.setVc(v2.getTextureCoordinates().y);
+                        data.setVd(v3.getTextureCoordinates().y);
+                    }
+                    processScanLine(img, depthBuffer, data, v1, v3, v2, v3, color, texture);
                 }
             }
         } else {
@@ -152,16 +181,46 @@ public class DrawUtils {
                     data.setNdotlb(nl2);
                     data.setNdotlc(nl1);
                     data.setNdotld(nl3);
-                    processScanLine(img, depthBuffer, data, v1, v2, v1, v3, color);
+                    if(texture != null) {
+                        data.setUa(v1.getTextureCoordinates().x);
+                        data.setUb(v2.getTextureCoordinates().x);
+                        data.setUc(v1.getTextureCoordinates().x);
+                        data.setUd(v3.getTextureCoordinates().x);
+
+                        data.setVa(v1.getTextureCoordinates().y);
+                        data.setVb(v2.getTextureCoordinates().y);
+                        data.setVc(v1.getTextureCoordinates().y);
+                        data.setVd(v3.getTextureCoordinates().y);
+                    }
+                    processScanLine(img, depthBuffer, data, v1, v2, v1, v3, color, texture);
                 } else {
                     data.setNdotla(nl2);
                     data.setNdotlb(nl3);
                     data.setNdotlc(nl1);
                     data.setNdotld(nl3);
-                    processScanLine(img, depthBuffer, data, v2, v3, v1, v3, color);
+                    if(texture != null) {
+                        data.setUa(v2.getTextureCoordinates().x);
+                        data.setUb(v3.getTextureCoordinates().x);
+                        data.setUc(v1.getTextureCoordinates().x);
+                        data.setUd(v3.getTextureCoordinates().x);
+
+                        data.setVa(v2.getTextureCoordinates().y);
+                        data.setVb(v3.getTextureCoordinates().y);
+                        data.setVc(v1.getTextureCoordinates().y);
+                        data.setVd(v3.getTextureCoordinates().y);
+                    }
+                    processScanLine(img, depthBuffer, data, v2, v3, v1, v3, color, texture);
                 }
             }
         }
+    }
+
+    /**
+     * Draw a filled triangle without texture using scan-line algorithm.
+     */
+    public static void drawFilledTriangle(WritableImage img, double[][] depthBuffer,
+                                          Vertex v1, Vertex v2, Vertex v3, Color color) {
+        drawFilledTriangle(img, depthBuffer, v1, v2, v3, color, null);
     }
 
     /**
@@ -170,7 +229,7 @@ public class DrawUtils {
      * pa, pb, pc, pd must then be sorted before.
      */
     private static void processScanLine(WritableImage img, double[][] depthBuffer, ScanLineData data,
-                                        Vertex va, Vertex vb, Vertex vc, Vertex vd, Color color) {
+                                        Vertex va, Vertex vb, Vertex vc, Vertex vd, Color color, Texture texture) {
         Vector3d pa = va.getCoordinates();
         Vector3d pb = vb.getCoordinates();
         Vector3d pc = vc.getCoordinates();
@@ -190,19 +249,37 @@ public class DrawUtils {
         // Starting and ending of color gradient
         double snl = MathUtils.interpolate(data.getNdotla(), data.getNdotlb(), gradient1);
         double enl = MathUtils.interpolate(data.getNdotlc(), data.getNdotld(), gradient2);
-
+        // Interpolating texture coordinates on Y
+        double su = 0, eu = 0, sv = 0, ev = 0;
+        if (texture != null) {
+            su = MathUtils.interpolate(data.getUa(), data.getUb(), gradient1);
+            eu = MathUtils.interpolate(data.getUc(), data.getUd(), gradient2);
+            sv = MathUtils.interpolate(data.getVa(), data.getVb(), gradient1);
+            ev = MathUtils.interpolate(data.getVc(), data.getVd(), gradient2);
+        }
         // Drawing a line from left (sx) to right (ex)
         for (int x = sx; x < ex; x++) {
             double gradient = (x - sx) / (double) (ex - sx);
             double z = MathUtils.interpolate(z1, z2, gradient);
+            // Color according to light
             double ndotl = MathUtils.interpolate(snl, enl, gradient);
+            double r = color.getRed() * ndotl;
+            double g = color.getGreen() * ndotl;
+            double b = color.getBlue() * ndotl;
+            // Texture
+            double u, v;
+            if (texture != null) {
+                u = MathUtils.interpolate(su, eu, gradient);
+                v = MathUtils.interpolate(sv, ev, gradient);
+                Color textureColor = texture.map(u, v);
+                r *= textureColor.getRed();
+                g *= textureColor.getGreen();
+                b *= textureColor.getBlue();
+            }
             // Draw point only if it is visible (Z-Buffering)
             if (depthBuffer[x][data.getCurrentY()] >= z) {
                 depthBuffer[x][data.getCurrentY()] = z;
-                drawPoint(img, new Vector3d(x, data.getCurrentY(), z),
-                        new Color(color.getRed() * ndotl,
-                                color.getGreen() * ndotl,
-                                color.getBlue() * ndotl, 1.0));
+                drawPoint(img, new Vector3d(x, data.getCurrentY(), z), new Color(r, g, b, 1.0));
             }
         }
     }

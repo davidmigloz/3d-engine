@@ -141,6 +141,9 @@ public class GuiController {
                     case "Shading":
                         selectedRender = Engine.RenderMode.SHADING;
                         break;
+                    case "Texture":
+                        selectedRender = Engine.RenderMode.TEXTURE;
+                        break;
                 }
                 break;
             }

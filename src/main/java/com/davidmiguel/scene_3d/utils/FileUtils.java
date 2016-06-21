@@ -2,15 +2,20 @@ package com.davidmiguel.scene_3d.utils;
 
 import com.davidmiguel.scene_3d.meshes.Face;
 import com.davidmiguel.scene_3d.meshes.Mesh;
+import com.davidmiguel.scene_3d.meshes.Texture;
 import com.davidmiguel.scene_3d.meshes.Vertex;
 import com.google.gson.stream.JsonReader;
+import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Methods to manage the import of meshes from file.
@@ -31,16 +36,29 @@ public class FileUtils {
      */
     public static Mesh[] parseMeshFromJSON(InputStream file) {
         List<Mesh> meshes = new ArrayList<>();
+        Map<String, Material> materials = new HashMap<>();
+
         try (JsonReader reader = new JsonReader(new BufferedReader(new InputStreamReader(file)))){
             // Read JSON
             reader.beginObject();
             while (reader.hasNext()) {
-                if(reader.nextName().equals("meshes")){
-                    reader.beginArray();
-                    meshes.add(readMesh(reader));
-                    reader.endArray();
-                } else {
-                    reader.skipValue();
+                switch (reader.nextName()) {
+                    case "materials":
+                        reader.beginArray();
+                        Material m = readMaterial(reader);
+                        if (m != null) {
+                            materials.put(m.getId(), m);
+                        }
+                        reader.endArray();
+                        break;
+                    case "meshes":
+                        reader.beginArray();
+                        meshes.add(readMesh(reader, materials));
+                        reader.endArray();
+                        break;
+                    default:
+                        reader.skipValue();
+                        break;
                 }
             }
             reader.endObject();
@@ -50,12 +68,59 @@ public class FileUtils {
         return meshes.toArray(new Mesh[meshes.size()]);
     }
 
-    private static Mesh readMesh(JsonReader reader) throws IOException {
+    private static Material readMaterial(JsonReader reader) throws IOException {
+        String name = null;
+        String id = null;
+        String diffuseTextureName = null;
+
+        // Parse object
+        reader.beginObject();
+        while (reader.hasNext()) {
+            switch (reader.nextName()) {
+                case "name":
+                    name = reader.nextString();
+                    break;
+                case "id":
+                    id = reader.nextString();
+                    break;
+                case "diffuseTexture":
+                    diffuseTextureName = readDiffuseTexture(reader) ;
+                    break;
+                default:
+                    reader.skipValue();
+                    break;
+            }
+        }
+        reader.endObject();
+
+        return name != null ? new Material(name, id, diffuseTextureName) : null;
+    }
+
+    private static String readDiffuseTexture(JsonReader reader) throws IOException {
+        String name = null;
+        // Parse object
+        reader.beginObject();
+        while (reader.hasNext()) {
+            switch (reader.nextName()) {
+                case "name":
+                    name = reader.nextString();
+                    break;
+                default:
+                    reader.skipValue();
+                    break;
+            }
+        }
+        reader.endObject();
+        return name;
+    }
+
+    private static Mesh readMesh(JsonReader reader, Map<String, Material> materials) throws IOException {
         List<Double> verticesList = new ArrayList<>(0);
         List<Integer> facesList = new ArrayList<>(0);
         List<Double> positionList = new ArrayList<>(0);
         List<Double> rotationList = new ArrayList<>(0);
         int uvCount = 0;
+        String materialId = null;
 
         // Parse object
         reader.beginObject();
@@ -65,7 +130,7 @@ public class FileUtils {
                     verticesList = readDoubleArray(reader);
                     break;
                 case "indices":
-                    facesList = readListIntegers(reader);
+                    facesList = readIntegerArray(reader);
                     break;
                 case "position":
                     positionList = readDoubleArray(reader);
@@ -75,6 +140,9 @@ public class FileUtils {
                     break;
                 case "uvCount":
                     uvCount = reader.nextInt();
+                    break;
+                case "materialId":
+                    materialId = reader.nextString();
                     break;
                 default:
                     reader.skipValue();
@@ -90,7 +158,7 @@ public class FileUtils {
                 verticesStep = 6; // coord vector + normal vector
                 break;
             case 1:
-                verticesStep = 8;
+                verticesStep = 8; // coord vector + normal vector + UV coord
                 break;
             case 2:
                 verticesStep = 10;
@@ -116,7 +184,15 @@ public class FileUtils {
             double nx = verticesList.get(i * verticesStep + 3);
             double ny = verticesList.get(i * verticesStep + 4);
             double nz = verticesList.get(i * verticesStep + 5);
-            vertices[i] = new Vertex(new Vector3d(x, y, z), new Vector3d(nx, ny, nz));
+            Vertex vertex = new Vertex(new Vector3d(x, y, z), new Vector3d(nx, ny, nz));
+            // Loading the texture coordinates (UV)
+            if (uvCount > 0) {
+                // Loading the texture coordinates
+                double u = verticesList.get(i * verticesStep + 6);
+                double v = verticesList.get(i * verticesStep + 7);
+                vertex.setTextureCoordinates(new Vector2d(u, v));
+            }
+            vertices[i] = vertex;
         }
         mesh.setVertices(vertices);
         // Add faces
@@ -136,6 +212,12 @@ public class FileUtils {
         mesh.getRotation().x = rotationList.get(0);
         mesh.getRotation().y = rotationList.get(1);
         mesh.getRotation().z = rotationList.get(2);
+        // Set texture
+        if (uvCount > 0) {
+            String meshTextureName = materials.get(materialId).getDiffuseTextureName();
+            InputStream in = FileUtils.class.getResourceAsStream("/textures/" + meshTextureName);
+            mesh.setTexture(new Texture(new Image(in)));
+        }
         return mesh;
     }
 
@@ -157,7 +239,7 @@ public class FileUtils {
     /**
      * Read list of integers from JSON array.
      */
-    private static List<Integer> readListIntegers(JsonReader reader) throws IOException {
+    private static List<Integer> readIntegerArray(JsonReader reader) throws IOException {
         List<Integer> list = new ArrayList<>();
 
         reader.beginArray();

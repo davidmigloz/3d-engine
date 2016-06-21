@@ -91,6 +91,13 @@
                                             shortcut="UP"/>
                     </accelerator>
                 </RadioMenuItem>
+                <RadioMenuItem mnemonicParsing="false" onAction="#handleSelectRender" text="Texture"
+                               toggleGroup="$render">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="DIGIT3" control="UP" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </RadioMenuItem>
             </Menu>
             <Menu mnemonicParsing="false" text="Camera">
                 <MenuItem mnemonicParsing="false" onAction="#handleCameraUp" text="Up">

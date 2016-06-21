@@ -23,7 +23,7 @@ import java.util.Arrays;
 public class Engine {
 
     public enum RenderMode {
-        WIREFRAME, SHADING
+        WIREFRAME, SHADING, TEXTURE
     }
 
     /**
@@ -112,12 +112,15 @@ public class Engine {
                 // Draw
                 switch (mode) {
                     case WIREFRAME:
-                        DrawUtils.drawFilledTriangle(backBuffer, pixelA, pixelB, pixelC, Color.WHITE);
+                        DrawUtils.drawTriangle(backBuffer, pixelA, pixelB, pixelC, Color.WHITE);
                         break;
                     case SHADING:
-                        double color = 1.0;
                         DrawUtils.drawFilledTriangle(backBuffer, depthBuffer, pixelA, pixelB, pixelC,
-                                new Color(color, color, color, 1.0));
+                                new Color(1.0, 1.0, 1.0, 1.0));
+                        break;
+                    case TEXTURE:
+                        DrawUtils.drawFilledTriangle(backBuffer, depthBuffer, pixelA, pixelB, pixelC,
+                                new Color(1.0, 1.0, 1.0, 1.0), mesh.getTexture());
                         break;
                 }
             }
@@ -138,6 +141,6 @@ public class Engine {
         // Transform from coordinate system starting at center to another starting at top left
         double x = point2d.x * width + width / 2.0;
         double y = -point2d.y * height + height / 2.0;
-        return new Vertex(new Vector3d(x, y, point2d.z), point3dWorld, normal3dWorld);
+        return new Vertex(new Vector3d(x, y, point2d.z), point3dWorld, normal3dWorld, vertex.getTextureCoordinates());
     }
 }
