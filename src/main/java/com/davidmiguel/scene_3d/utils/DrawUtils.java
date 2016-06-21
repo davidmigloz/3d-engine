@@ -16,14 +16,17 @@ import javax.vecmath.Vector3d;
 @SuppressWarnings("WeakerAccess")
 public class DrawUtils {
 
+    private static final int WIDTH = 900;
+    private static final int HEIGHT = 550;
+
     /**
      * Calls putPixel but does the clipping operation before.
      */
     public static void drawPoint(WritableImage img, Vector2d point, Color color) {
         // Clipping what's visible on screen
         if (point.x >= 0 && point.y >= 0
-                && point.x < img.getWidth()
-                && point.y < img.getHeight()) {
+                && point.x < WIDTH
+                && point.y < HEIGHT) {
             // Drawing point
             putPixel(img, (int) point.x, (int) point.y, color);
         }
@@ -163,12 +166,8 @@ public class DrawUtils {
     /**
      * Put a pixel on backBuffer at specific x,y coordinates.
      */
-    private static void putPixel(WritableImage img, int x, int y, Color color) {
+    private static synchronized void putPixel(WritableImage img, int x, int y, Color color) {
         PixelWriter pw = img.getPixelWriter();
-        // Write new pixel
-        int r = (int) (color.getRed() * (255));
-        int g = (int) (color.getGreen() * (255));
-        int b = (int) (color.getBlue() * (255));
-        pw.setColor(x, y, Color.rgb(r, g, b));
+        pw.setColor(x, y, color);
     }
 }

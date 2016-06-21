@@ -38,9 +38,14 @@ public class Engine {
      */
     private double[][] depthBuffer;
 
+    private double width;
+    private double height;
+
     public Engine(GraphicsContext gc) {
         this.gc = gc;
-        this.depthBuffer = new double[(int) gc.getCanvas().getWidth()][(int) gc.getCanvas().getWidth()];
+        width = gc.getCanvas().getWidth();
+        height = gc.getCanvas().getHeight();
+        this.depthBuffer = new double[(int) width][(int) height];
     }
 
     /**
@@ -64,7 +69,7 @@ public class Engine {
     private void clear() {
         // Clear canvas
         gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        gc.fillRect(0, 0, width, height);
         // Clear backBuffer
         SnapshotParameters params = new SnapshotParameters();
         params.setFill(Color.TRANSPARENT);
@@ -74,6 +79,7 @@ public class Engine {
             Arrays.fill(row, Double.MAX_VALUE);
         }
     }
+
 
     /**
      * Re-compute each vertex projection during each frame.
@@ -132,8 +138,8 @@ public class Engine {
         // Transforming the coordinates
         Vector3d point = MathUtils.transformCoordinates(coord, transMat);
         // Transform from coordinate system starting at center to another starting at top left
-        double x = point.x * gc.getCanvas().getWidth() + gc.getCanvas().getWidth() / 2.0;
-        double y = -point.y * gc.getCanvas().getHeight() + gc.getCanvas().getHeight() / 2.0;
+        double x = point.x * width + width / 2.0;
+        double y = -point.y * height + height / 2.0;
         return new Vector3d(x, y, point.z);
     }
 }

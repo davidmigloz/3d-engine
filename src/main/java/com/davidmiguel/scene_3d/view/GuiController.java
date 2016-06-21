@@ -13,9 +13,14 @@ import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.vecmath.Vector3d;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Stack;
 
@@ -26,6 +31,8 @@ import java.util.Stack;
  * @since 18/06/2016
  */
 public class GuiController {
+
+    private static final Logger logger = LoggerFactory.getLogger(GuiController.class);
 
     @FXML
     private Canvas canvas;
@@ -73,43 +80,43 @@ public class GuiController {
         fileChooser.setTitle("Open mesh...");
         File f = fileChooser.showOpenDialog(primaryStage);
         if (f != null) {
-            addMeshesFromFile(f);
+            addMeshesFromFile(f.getAbsolutePath(), true);
         }
     }
 
     @FXML
     private void handleOpenCube() throws URISyntaxException {
-        this.addMeshesFromFile(new File(getClass().getResource("/meshes/Cube.json").toURI()));
+        this.addMeshesFromFile("/meshes/Cube.json", false);
     }
 
     @FXML
     private void handleOpenUVSphere() throws URISyntaxException {
-        this.addMeshesFromFile(new File(getClass().getResource("/meshes/UVSphere.json").toURI()));
+        this.addMeshesFromFile("/meshes/UVSphere.json", false);
     }
 
     @FXML
     private void handleOpenICOSphere() throws URISyntaxException {
-        this.addMeshesFromFile(new File(getClass().getResource("/meshes/ICOSphere.json").toURI()));
+        this.addMeshesFromFile("/meshes/ICOSphere.json", false);
     }
 
     @FXML
     private void handleOpenCylinder() throws URISyntaxException {
-        this.addMeshesFromFile(new File(getClass().getResource("/meshes/Cylinder.json").toURI()));
+        this.addMeshesFromFile("/meshes/Cylinder.json", false);
     }
 
     @FXML
     private void handleOpenCone() throws URISyntaxException {
-        this.addMeshesFromFile(new File(getClass().getResource("/meshes/Cone.json").toURI()));
+        this.addMeshesFromFile("/meshes/Cone.json", false);
     }
 
     @FXML
     private void handleOpenTorus() throws URISyntaxException {
-        this.addMeshesFromFile(new File(getClass().getResource("/meshes/Torus.json").toURI()));
+        this.addMeshesFromFile("/meshes/Torus.json", false);
     }
 
     @FXML
     private void handleOpenSuzanne() throws URISyntaxException {
-        this.addMeshesFromFile(new File(getClass().getResource("/meshes/Suzanne.json").toURI()));
+        this.addMeshesFromFile("/meshes/Suzanne.json", false);
     }
 
     @FXML
@@ -191,9 +198,19 @@ public class GuiController {
         alert.showAndWait();
     }
 
-    private void addMeshesFromFile(File f) {
-        meshes = FileUtils.parseMeshFromJSON(f);
-        status.setText(f.getName() + " loaded!");
+    private void addMeshesFromFile(String file, boolean external) {
+        InputStream in = null;
+        if(external) {
+            try {
+                in= new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                logger.error("Error loading file.", e);
+            }
+        } else {
+            in = getClass().getResourceAsStream(file);
+        }
+        meshes = FileUtils.parseMeshFromJSON(in);
+        status.setText(file + " loaded!");
         // Start rendering loop, start rotation and reset camera
         tl.play();
         if(!rotation) {
@@ -206,7 +223,7 @@ public class GuiController {
         // Rendering loop (60hz)
         tl = new Timeline();
         tl.setCycleCount(Animation.INDEFINITE);
-        KeyFrame frame = new KeyFrame(Duration.millis(17), event -> {
+        KeyFrame frame = new KeyFrame(Duration.millis(16), event -> {
             //  Update the various position & rotation values of our meshes
             if(rotation) {
                 for (Mesh mesh : meshes) {

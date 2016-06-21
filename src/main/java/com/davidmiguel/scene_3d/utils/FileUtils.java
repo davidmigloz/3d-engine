@@ -7,9 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.vecmath.Vector3d;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +28,9 @@ public class FileUtils {
      * @param file json file
      * @return array of meshes
      */
-    public static Mesh[] parseMeshFromJSON(File file) {
+    public static Mesh[] parseMeshFromJSON(InputStream file) {
         List<Mesh> meshes = new ArrayList<>();
-        try (JsonReader reader = new JsonReader(new FileReader(file.getAbsolutePath()))){
+        try (JsonReader reader = new JsonReader(new BufferedReader(new InputStreamReader(file)))){
             // Read JSON
             reader.beginObject();
             while (reader.hasNext()) {
