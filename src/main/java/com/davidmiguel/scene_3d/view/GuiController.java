@@ -138,7 +138,7 @@ public class GuiController {
                     case "Wireframe":
                         selectedRender = Engine.RenderMode.WIREFRAME;
                         break;
-                    case "Rasterization":
+                    case "Shading":
                         selectedRender = Engine.RenderMode.SHADING;
                         break;
                 }

@@ -98,28 +98,15 @@ public class DrawUtils {
         Vector3d p2 = v2.getCoordinates();
         Vector3d p3 = v3.getCoordinates();
 
-        // Normal face's vector is the average normal between each vertex's normal
-        Vector3d vnFace = new Vector3d();
-        vnFace.add(v1.getNormal(), v2.getNormal());
-        vnFace.add(v3.getNormal());
-        vnFace.x /= 3.0;
-        vnFace.y /= 3.0;
-        vnFace.z /= 3.0;
-        // Computing also the center point of the face
-        Vector3d centerPoint = new Vector3d();
-        centerPoint.add(v1.getWorldCoordinates(), v2.getWorldCoordinates());
-        centerPoint.add(v3.getWorldCoordinates());
-        centerPoint.x /= 3.0;
-        centerPoint.y /= 3.0;
-        centerPoint.z /= 3.0;
-
         // Light position
         Vector3d lightPos = new Vector3d(0, 10, 10);
         // Computing the cos of the angle between the light vector and the normal vector
         // it will return a value between 0 and 1 that will be used as the intensity of the color
-        double ndotl = MathUtils.computeNDotL(centerPoint, vnFace, lightPos);
+        double nl1 = MathUtils.computeNDotL(v1.getWorldCoordinates(), v1.getNormal(), lightPos);
+        double nl2 = MathUtils.computeNDotL(v2.getWorldCoordinates(), v2.getNormal(), lightPos);
+        double nl3 = MathUtils.computeNDotL(v3.getWorldCoordinates(), v3.getNormal(), lightPos);
 
-        ScanLineData data = new ScanLineData(ndotl);
+        ScanLineData data = new ScanLineData();
 
         // Lines' directions
         double dP1P2, dP1P3;
@@ -143,8 +130,16 @@ public class DrawUtils {
             for (int y = (int) p1.y; y <= (int) p3.y; y++) {
                 data.setCurrentY(y);
                 if (y < p2.y) {
+                    data.setNdotla(nl1);
+                    data.setNdotlb(nl3);
+                    data.setNdotlc(nl1);
+                    data.setNdotld(nl2);
                     processScanLine(img, depthBuffer, data, v1, v3, v1, v2, color);
                 } else {
+                    data.setNdotla(nl1);
+                    data.setNdotlb(nl3);
+                    data.setNdotlc(nl2);
+                    data.setNdotld(nl3);
                     processScanLine(img, depthBuffer, data, v1, v3, v2, v3, color);
                 }
             }
@@ -153,8 +148,16 @@ public class DrawUtils {
             for (int y = (int) p1.y; y <= (int) p3.y; y++) {
                 data.setCurrentY(y);
                 if (y < p2.y) {
+                    data.setNdotla(nl1);
+                    data.setNdotlb(nl2);
+                    data.setNdotlc(nl1);
+                    data.setNdotld(nl3);
                     processScanLine(img, depthBuffer, data, v1, v2, v1, v3, color);
                 } else {
+                    data.setNdotla(nl2);
+                    data.setNdotlb(nl3);
+                    data.setNdotlc(nl1);
+                    data.setNdotld(nl3);
                     processScanLine(img, depthBuffer, data, v2, v3, v1, v3, color);
                 }
             }
@@ -184,17 +187,22 @@ public class DrawUtils {
         // Starting Z & ending Z
         double z1 = MathUtils.interpolate(pa.z, pb.z, gradient1);
         double z2 = MathUtils.interpolate(pc.z, pd.z, gradient2);
+        // Starting and ending of color gradient
+        double snl = MathUtils.interpolate(data.getNdotla(), data.getNdotlb(), gradient1);
+        double enl = MathUtils.interpolate(data.getNdotlc(), data.getNdotld(), gradient2);
 
         // Drawing a line from left (sx) to right (ex)
         for (int x = sx; x < ex; x++) {
             double gradient = (x - sx) / (double) (ex - sx);
             double z = MathUtils.interpolate(z1, z2, gradient);
+            double ndotl = MathUtils.interpolate(snl, enl, gradient);
             // Draw point only if it is visible (Z-Buffering)
             if (depthBuffer[x][data.getCurrentY()] >= z) {
                 depthBuffer[x][data.getCurrentY()] = z;
                 drawPoint(img, new Vector3d(x, data.getCurrentY(), z),
-                        new Color(color.getRed() * data.getNdotla(), color.getGreen() * data.getNdotla(),
-                                color.getBlue() * data.getNdotla(), 1.0));
+                        new Color(color.getRed() * ndotl,
+                                color.getGreen() * ndotl,
+                                color.getBlue() * ndotl, 1.0));
             }
         }
     }

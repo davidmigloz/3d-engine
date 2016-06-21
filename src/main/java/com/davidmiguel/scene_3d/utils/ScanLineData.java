@@ -13,10 +13,6 @@ class ScanLineData {
     private double ndotlc;
     private double ndotld;
 
-    ScanLineData(double ndotla) {
-        this.ndotla = ndotla;
-    }
-
     int getCurrentY() {
         return currentY;
     }
