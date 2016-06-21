@@ -2,6 +2,7 @@ package com.davidmiguel.scene_3d.utils;
 
 import com.davidmiguel.scene_3d.meshes.Face;
 import com.davidmiguel.scene_3d.meshes.Mesh;
+import com.davidmiguel.scene_3d.meshes.Vertex;
 import com.google.gson.stream.JsonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public class FileUtils {
     private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
     /**
-     * Import a mesh from a babylon json file or our own json format (based on babylon json).
+     * Import a mesh from a babylon json file.
      * https://doc.babylonjs.com/generals/File_Format_Map_(.babylon)
      *
      * @param file json file
@@ -86,7 +87,7 @@ public class FileUtils {
         int verticesStep; // vertices array step depends on the number of texture's coordinates per vertex
         switch (uvCount) {
             case 0:
-                verticesStep = 6;
+                verticesStep = 6; // coord vector + normal vector
                 break;
             case 1:
                 verticesStep = 8;
@@ -95,8 +96,8 @@ public class FileUtils {
                 verticesStep = 10;
                 break;
             default:
-                verticesStep = 3; // For my own format (uvCount=-1) (no texture information)
-                break;
+                logger.error("Error at parsing JSON.");
+                return null;
         }
         // Number of vertices
         int numVertices = verticesList.size() / verticesStep;
@@ -105,12 +106,17 @@ public class FileUtils {
         // Create mesh
         Mesh mesh = new Mesh();
         // Add vertices
-        Vector3d[] vertices = new Vector3d[numVertices];
+        Vertex[] vertices = new Vertex[numVertices];
         for (int i = 0; i < numVertices; i++) {
+            // Vertex coord vector
             double x = verticesList.get(i * verticesStep);
             double y = verticesList.get(i * verticesStep + 1);
             double z = verticesList.get(i * verticesStep + 2);
-            vertices[i] = new Vector3d(x, y, z);
+            // Loading the vertex normal vector exported by Blender
+            double nx = verticesList.get(i * verticesStep + 3);
+            double ny = verticesList.get(i * verticesStep + 4);
+            double nz = verticesList.get(i * verticesStep + 5);
+            vertices[i] = new Vertex(new Vector3d(x, y, z), new Vector3d(nx, ny, nz));
         }
         mesh.setVertices(vertices);
         // Add faces

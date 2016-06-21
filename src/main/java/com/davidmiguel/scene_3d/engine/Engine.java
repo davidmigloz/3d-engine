@@ -2,6 +2,7 @@ package com.davidmiguel.scene_3d.engine;
 
 import com.davidmiguel.scene_3d.meshes.Face;
 import com.davidmiguel.scene_3d.meshes.Mesh;
+import com.davidmiguel.scene_3d.meshes.Vertex;
 import com.davidmiguel.scene_3d.utils.DrawUtils;
 import com.davidmiguel.scene_3d.utils.MathUtils;
 import javafx.scene.SnapshotParameters;
@@ -22,7 +23,7 @@ import java.util.Arrays;
 public class Engine {
 
     public enum RenderMode {
-        WIREFRAME, RASTERIZATION
+        WIREFRAME, SHADING
     }
 
     /**
@@ -75,7 +76,7 @@ public class Engine {
         params.setFill(Color.TRANSPARENT);
         backBuffer = gc.getCanvas().snapshot(params, null);
         // Clear depthBuffer
-        for (double[] row: depthBuffer) {
+        for (double[] row : depthBuffer) {
             Arrays.fill(row, Double.MAX_VALUE);
         }
     }
@@ -86,8 +87,7 @@ public class Engine {
      */
     private void render(Camera camera, Mesh[] meshes, RenderMode mode) {
         Matrix4d viewMatrix = MathUtils.lookAtLH(camera.getPosition(), camera.getTarget(), MathUtils.UP);
-        Matrix4d projectionMatrix = MathUtils.perspectiveFovLH(
-                0.78, gc.getCanvas().getWidth() / gc.getCanvas().getHeight(), 0.01, 1.0);
+        Matrix4d projectionMatrix = MathUtils.perspectiveFovLH(0.78, width / height, 0.01, 1.0);
 
         for (Mesh mesh : meshes) {
             // Apply rotation and then translation
@@ -101,28 +101,23 @@ public class Engine {
             transformMatrix.mul(projectionMatrix);
 
             // Draw faces
-            int indexFaces = 0;
             for (Face face : mesh.getFaces()) {
                 // Project the 3D coordinates into the 2D space
-                Vector3d vertexA = mesh.getVertices()[face.getA()];
-                Vector3d vertexB = mesh.getVertices()[face.getB()];
-                Vector3d vertexC = mesh.getVertices()[face.getC()];
-                Vector3d pixelA = this.project(vertexA, transformMatrix);
-                Vector3d pixelB = this.project(vertexB, transformMatrix);
-                Vector3d pixelC = this.project(vertexC, transformMatrix);
+                Vertex vertexA = mesh.getVertices()[face.getA()];
+                Vertex vertexB = mesh.getVertices()[face.getB()];
+                Vertex vertexC = mesh.getVertices()[face.getC()];
+                Vertex pixelA = this.project(vertexA, transformMatrix, worldMatrix);
+                Vertex pixelB = this.project(vertexB, transformMatrix, worldMatrix);
+                Vertex pixelC = this.project(vertexC, transformMatrix, worldMatrix);
                 // Draw
                 switch (mode) {
                     case WIREFRAME:
                         DrawUtils.drawFilledTriangle(backBuffer, pixelA, pixelB, pixelC, Color.WHITE);
                         break;
-                    case RASTERIZATION:
-                        double color = (0.25
-                                + ((indexFaces % mesh.getFaces().length)
-                                / (double) mesh.getFaces().length)
-                                * 0.75);
-                        DrawUtils.drawFilledTriangle(backBuffer, pixelA, pixelB, pixelC,
-                                depthBuffer, new Color(color, color, color, 1.0));
-                        indexFaces++;
+                    case SHADING:
+                        double color = 1.0;
+                        DrawUtils.drawFilledTriangle(backBuffer, depthBuffer, pixelA, pixelB, pixelC,
+                                new Color(color, color, color, 1.0));
                         break;
                 }
             }
@@ -134,12 +129,15 @@ public class Engine {
      * Project takes some 3D coordinates and transform them in
      * 2D coordinates using the transformation matrix.
      */
-    private Vector3d project(Vector3d coord, Matrix4d transMat) {
-        // Transforming the coordinates
-        Vector3d point = MathUtils.transformCoordinates(coord, transMat);
+    private Vertex project(Vertex vertex, Matrix4d transMat, Matrix4d world) {
+        // Transforming the coordinates into 2D space
+        Vector3d point2d = MathUtils.transformCoordinates(vertex.getCoordinates(), transMat);
+        // Transforming  the coordinates & the normal to the vertex in the 3D world
+        Vector3d point3dWorld = MathUtils.transformCoordinates(vertex.getCoordinates(), world);
+        Vector3d normal3dWorld = MathUtils.transformCoordinates(vertex.getNormal(), world);
         // Transform from coordinate system starting at center to another starting at top left
-        double x = point.x * width + width / 2.0;
-        double y = -point.y * height + height / 2.0;
-        return new Vector3d(x, y, point.z);
+        double x = point2d.x * width + width / 2.0;
+        double y = -point2d.y * height + height / 2.0;
+        return new Vertex(new Vector3d(x, y, point2d.z), point3dWorld, normal3dWorld);
     }
 }

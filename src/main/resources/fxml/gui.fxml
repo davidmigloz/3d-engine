@@ -85,7 +85,7 @@
                     </toggleGroup>
                 </RadioMenuItem>
                 <RadioMenuItem mnemonicParsing="false" onAction="#handleSelectRender" selected="true"
-                               text="Rasterization" toggleGroup="$render">
+                               text="Shading" toggleGroup="$render">
                     <accelerator>
                         <KeyCodeCombination alt="UP" code="DIGIT2" control="UP" meta="UP" shift="UP"
                                             shortcut="UP"/>

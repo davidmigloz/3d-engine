@@ -192,4 +192,21 @@ public class MathUtils {
     public static double interpolate(double min, double max, double gradient) {
         return min + (max - min) * clamp(gradient);
     }
+
+    /**
+     * Compute the cosine of the angle between the light vector and the normal vector.
+     *
+     * @return a value between 0 and 1
+     */
+    public static double computeNDotL(Vector3d vertex, Vector3d normal, Vector3d lightPosition) {
+        Vector3d lightDirection = new Vector3d();
+        lightDirection.sub(lightPosition, vertex);
+
+        Vector3d normalizedNormal = new Vector3d(normal);
+        normalizedNormal.normalize();
+        Vector3d normalizedLightDirection = new Vector3d(lightDirection);
+        normalizedLightDirection.normalize();
+
+        return Math.max(0, normalizedNormal.dot(normalizedLightDirection));
+    }
 }

@@ -60,7 +60,7 @@ public class GuiController {
         canvas.getGraphicsContext2D().setLineWidth(1);
         canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         rotation = false;
-        selectedRender = Engine.RenderMode.RASTERIZATION;
+        selectedRender = Engine.RenderMode.SHADING;
         previousFramesDuration = new Stack<>();
         // Config 3d engine
         engine = new Engine(canvas.getGraphicsContext2D());
@@ -139,7 +139,7 @@ public class GuiController {
                         selectedRender = Engine.RenderMode.WIREFRAME;
                         break;
                     case "Rasterization":
-                        selectedRender = Engine.RenderMode.RASTERIZATION;
+                        selectedRender = Engine.RenderMode.SHADING;
                         break;
                 }
                 break;
