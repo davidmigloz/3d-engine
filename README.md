@@ -32,7 +32,7 @@ Software implementation (based on CPU) of a 3D engine.
 - UV coordinates for texture mapping.
 - Data loaded from Babylon JSON files:
   + Mesh: Name / Vertices / Faces / Position / Rotation / Texture / UV coordinates
-	+ Texture: Name / ID / Image file name
+  + Texture: Name / ID / Image file name
 
 ### Download
 
