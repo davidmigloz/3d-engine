@@ -25,7 +25,7 @@ Software implementation (based on CPU) of a 3D engine.
 - Left-handed world.
 - Rendering loop: 60hz.
 - Lines are drawn with Bresenham’s algorithm.
-- Triangles are filled with scan-line algorithm.
+- Triangles are filled with Scan-Line algorithm.
 - Visibility problem is solved with Z-Buffer.
 - Gouraud Shading for handling lightning.
 - Fixed point of light.
@@ -36,7 +36,7 @@ Software implementation (based on CPU) of a 3D engine.
 
 ### Download
 
-> [engine-3d.v1.jar](https://github.com/davidmigloz/3d-engine/releases/download/v1/engine-3d.v1.jar)
+> [Engine-3d.v1.jar](https://github.com/davidmigloz/3d-engine/releases/download/v1/engine-3d.v1.jar)
 
 ### References
 
