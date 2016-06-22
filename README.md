@@ -9,8 +9,8 @@ Software implementation (based on CPU) of a 3D engine.
 - Three types of rendering (wireframe, shading and texture).
 - User has the control over the camera.
 - Presentation mode (the model rotates automatically).
-- 8 3D models included:
-  + Cube
+- Eight 3D models included:
+	+ Cube
 	+ UV Sphere
 	+ ICO Sphere
 	+ Cylinder
