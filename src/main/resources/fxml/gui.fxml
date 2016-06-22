@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 
 <VBox xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.davidmiguel.scene_3d.view.GuiController">
+      fx:controller="com.davidmiguel.engine_3d.view.GuiController">
     <MenuBar>
         <Menu mnemonicParsing="false" text="File">
             <MenuItem mnemonicParsing="false" onAction="#handleOpenMesh" text="Open mesh…"/>
