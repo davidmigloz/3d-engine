@@ -46,7 +46,7 @@ Software implementation (based on CPU) of a 3D engine.
 
 #### Download
 
-> [engine-3d.v1.jar](https://github.com/davidmigloz/engine-3d/releases/download/v1/engine-3d.v1.jar)
+> [engine-3d.v1.jar](https://github.com/davidmigloz/3d-engine/releases/download/v1/engine-3d.v1.jar)
 
 #### References
 
