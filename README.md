@@ -4,7 +4,7 @@ Software implementation (based on CPU) of a 3D engine.
 
 ![Screenshot](https://raw.githubusercontent.com/davidmigloz/3d-engine/master/docs/img/screenshot.gif)
 
-#### Features
+### Features
 
 - Three types of rendering (wireframe, shading and texture).
 - User has the control over the camera.
@@ -20,7 +20,7 @@ Software implementation (based on CPU) of a 3D engine.
 - Import 3D models in [Babylon JSON](https://doc.babylonjs.com/generals/File_Format_Map_(.babylon)) format.
 - Models can be exported from Blender with [Babylon exporter plug-in](david.blob.core.windows.net/softengine3d/io_export_babylon.py).
 
-#### Details
+### Details
 
 - Left-handed world.
 - Rendering loop: 60hz.
@@ -44,11 +44,11 @@ Software implementation (based on CPU) of a 3D engine.
 		- ID
 		- Image file name
 
-#### Download
+### Download
 
 > [engine-3d.v1.jar](https://github.com/davidmigloz/3d-engine/releases/download/v1/engine-3d.v1.jar)
 
-#### References
+### References
 
 1. https://www.davrous.com/2013/06/13/tutorial-series-learning-how-to-write-a-3d-soft-engine-from-scratch-in-c-typescript-or-javascript/
 2. http://www.codinglabs.net/article_world_view_projection_matrix.aspx
