@@ -31,18 +31,8 @@ Software implementation (based on CPU) of a 3D engine.
 - Fixed point of light.
 - UV coordinates for texture mapping.
 - Data loaded from Babylon JSON files:
-  + Mesh:
-		- Name
-		- Vertices
-		- Faces
-		- Position
-		- Rotation
-		- Texture
-		- UV coordinates
-	+ Texture:
-		- Name 
-		- ID
-		- Image file name
+  + Mesh: Name / Vertices / Faces / Position / Rotation / Texture / UV coordinates
+	+ Texture: Name / ID / Image file name
 
 ### Download
 
